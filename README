@@ -10,7 +10,7 @@ For the window management, all shortcuts use the <Alt> (Meta) key by default:
 This implies that:
   1/ you're not using <Alt> as main modifier in your dwm/wmii/i3 window manager
      -- I'd suggest to use the <Super> (win) key for your WM instead
-  2/ your <Alt> key is enabled in your Vim session:
+  2/ the <Alt> key is enabled in your Vim session:
      -- if your <Alt> key sends <Esc> instead of setting the 8th bit, please
         uncomment the related shortcuts in the suckless.vim script.
      -- if you're running gVim, a quick and dirty way to free <Alt>-* shortcuts
