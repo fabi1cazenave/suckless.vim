@@ -16,7 +16,7 @@ This implies that:
      -- if you're running gVim, a quick and dirty way to free <Alt>-* shortcuts
         is to disable all menus:  set guioptions-=m
      -- if you're runing MacVim, you'll have to set the 'macmeta' pref to enable
-        Option keys as "Meta"
+        Option keys as "Meta" (MacVim ≥ 7.3 required)
      -- if you're running MacVim and want to keep one Option key, this patch
         should be useful: https://gist.github.com/666875
   3/ if you're not pleased with <Alt>-* shortcuts, you'll have to define your
