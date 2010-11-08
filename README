@@ -1,16 +1,16 @@
 Tiling window management that sucks less - see http://wmii.suckless.org/
 This emulates wmii in Vim as much as possible. A dwm emulation might come next.
 
-For the window management, all shortcuts use the <Meta> (Alt) key by default:
-  Alt+[sdf]       => tiling mode selection ([s]tacked, [d]ivided, [f]ullscreen)
-  Alt+[hjkl]      => select adjacent window
-  Alt+[HJKL]      => move current window
+For the window management, all shortcuts use the <Alt> (Meta) key by default:
+       Alt+[sdf]  => tiling mode selection: [s]tacked, [d]ivided, [f]ullscreen
+       Alt+[hjkl] => select adjacent window
+       Alt+[HJKL] => move current window
   Ctrl+Alt+[hjkl] => resize current window
 
 This implies that:
   1/ you're not using <Alt> as main modifier in your dwm/wmii/i3 window manager
      -- I'd suggest to use the <Super> (win) key for your WM instead
-  2/ your <Alt> key is enabled in your Vim session
+  2/ your <Alt> key is enabled in your Vim session:
      -- if your <Alt> key sends <Esc> instead of setting the 8th bit, please
         uncomment the related shortcuts in the suckless.vim script.
      -- if you're running gVim, a quick and dirty way to free <Alt>-* shortcuts
