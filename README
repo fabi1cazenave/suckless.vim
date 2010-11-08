@@ -1,0 +1,23 @@
+Tiling window management that sucks less - see http://wmii.suckless.org/
+This emulates wmii in Vim as much as possible. A dwm emulation might come next.
+
+For the window management, all shortcuts use the <Meta> (Alt) key by default:
+  Alt+[sdf]       => tiling mode selection ([s]tacked, [d]ivided, [f]ullscreen)
+  Alt+[hjkl]      => select adjacent window
+  Alt+[HJKL]      => move current window
+  Ctrl+Alt+[hjkl] => resize current window
+
+This implies that:
+  1/ you're not using <Alt> as main modifier in your dwm/wmii/i3 window manager
+  2/ your <Alt> key is enabled in your Vim session
+     -- if your <Alt> key sends <Esc> instead of setting the 8th bit, please
+        uncomment the related shortcuts in the suckless.vim script.
+
+Vim tabs are used as "views":
+  Alt+[0..9]      => select tab [1..10]
+  <Leader>[0..9]  => select tab [1..10]
+  <Leader>t[0..9] => move current window to tab [1..10]
+  <Leader>T[0..9] => copy current window to tab [1..10]
+
+This is my very first Vim plugin, so there should be a bunch of mistakes...
+feel free to submit corrections and enhancements.
