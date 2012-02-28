@@ -1,7 +1,7 @@
 "|
-"| File          : ~/.vim/plugin/suckless.fim
+"| File          : ~/.vim/plugin/suckless.vim
 "| Last modified : 2011-10-12
-"| Author        : Fabien Cazenave <fabien@cazenave.cc>
+"| Author        : Fabien Cazenave
 "| Licence       : WTFPL
 "|
 "| Tiling window management that sucks less - see http://suckless.org/
