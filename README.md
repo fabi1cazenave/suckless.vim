@@ -29,18 +29,25 @@ Copy the script into your ``$HOME/.vim/plugin`` directory so that it will be sou
 Meta/Alt tricks
 --------------------------------------------------------------------------------
 
-Warning, using the <kbd>Alt</kbd> key in these shortcuts implies that:
+This plugin relies quite heavily on the <kbd>Alt</kbd> key. Unfortunately,
+defining <kbd>Alt</kbd> shortcuts in Vim can be tricky… Here’s a quick help if
+your <kbd>Alt</kbd> shortcuts don’t work as expected.
 
-1. you’re not using <kbd>Alt</kbd> as main modifier in your tiling window manager  
-   — in which case, I’d suggest to use the <kbd>Super</kbd> (win) key for your WM instead;
-2. the <kbd>Alt</kbd> key is enabled in your Vim session:
-    - if your <kbd>Alt</kbd> key sends <kbd>Esc</kbd> instead of setting the 8th bit,
-      please uncomment the related shortcuts in the ``suckless.vim`` script;
-    - if you’re running gVim, a quick and dirty way to free <kbd>Alt-\*</kbd>
-      shortcuts is to disable all menus:  ``set guioptions-=m``;
-    - if you’re runing MacVim, you’ll have to set the ``macmeta`` pref to enable
-      Option keys as "Meta" (MacVim ≥ 7.3 required); and if you want to keep
-      *one* Option key, [this patch](https://gist.github.com/666875) will help.
+On Windows and GNU/Linux the <kbd>Alt</kbd> key can either:
+- modify the 8th bit of the current character, i.e. <kbd>Alt</kbd><kbd>j</kbd> outputs a ```ê```
+  — that’s what gVim does, and that’s xterm’s default behaviour;
+- send an <kbd>Esc</kbd> along with the key, i.e. <kbd>Alt</kbd><kbd>j</kbd> outputs <kbd>Esc</kbd><kbd>j</kbd>
+  — this is sometimes referred to as an “8-bit clean” behavior, and that’s the
+  default behavior of all modern terminal emulators.
+
+Suckless.vim assumes that the <kbd>Alt</kbd> key modifies the 8th bit in GUI mode
+and sends sends escape in CLI mode, but you can override this setting by setting
+the `g:MetaSendsEscape` variable accordingly.
+
+On MacOSX, the <kbd>Alt</kbd> key might not be enabled in your terminal by
+default. On MacVim, you’ll have to set the ``macmeta`` pref to enable Option
+keys as "Meta" (MacVim ≥ 7.3 required); and if you want to keep *one* Option key,
+[this patch](https://gist.github.com/666875) can help.
 
 If you’re not pleased with <kbd>Alt-\*</kbd> shortcuts, you’ll have to define your own shortcuts directly in the ``suckless.vim`` file. :-/
 
@@ -48,5 +55,5 @@ If you’re not pleased with <kbd>Alt-\*</kbd> shortcuts, you’ll have to defin
 Feedback
 --------------------------------------------------------------------------------
 
-This is my very first Vim plugin, so there should be a bunch of mistakes… feel free to submit corrections, enhancements and suggestions.
+This is my very first Vim plugin, so there should be a good bunch of mistakes… feel free to submit corrections, enhancements and suggestions.
 
