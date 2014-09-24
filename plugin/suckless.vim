@@ -1,6 +1,6 @@
 "|
 "| File          : ~/.vim/plugin/suckless.vim
-"| Last modified : 2011-10-12
+"| Project page  : https://github.com/fabi1cazenave/suckless.vim
 "| Author        : Fabien Cazenave
 "| Licence       : WTFPL
 "|
@@ -21,7 +21,15 @@ let g:SucklessWrapAroundHL = 1    " 0 = no wrap
                                   " 1 = wrap in current tab    (wmii-like)
                                   " 2 = wrap in all tabs
 
-" Tabs / views: organize windows in tabs <<<
+" in gVim, Alt sets the 8th bit; otherwise, assume the terminal is 8-bit clean
+if !exists("g:MetaSendsEscape")
+  let g:MetaSendsEscape = !has("gui_running")
+endif
+
+"|============================================================================
+"|    Tabs / views: organize windows in tabs                               <<<
+"|============================================================================
+
 " Tab line in Vim <<<
 set tabline=%!SucklessTabLine()
 
@@ -59,7 +67,6 @@ function! SucklessTabLine()
   endfor
 
   " after the last tab fill with TabLineFill and reset tab page nr
-  " 
   let line .= '%#TabLineFill#%T'
 
   " right-align the label to close the current tab page
@@ -71,6 +78,7 @@ function! SucklessTabLine()
 endfunction
 
 " SucklessTabLine >>>
+
 " Tab labels in gVim <<<
 set guitablabel=%{SucklessTabLabel()}
 
@@ -107,6 +115,7 @@ function! SucklessTabLabel()
 endfunction
 
 " SucklessTabLabel >>>
+
 " MoveToTab: move/copy current window to another tab <<<
 
 function! MoveToTab(viewnr, copy)
@@ -138,25 +147,30 @@ function! MoveToTab(viewnr, copy)
 endfunction
 
 " MoveToTab >>>
+
 ">>>
 
-" Window tiles: selection, movement, resizing <<<
+"|============================================================================
+"|    Window tiles: selection, movement, resizing                          <<<
+"|============================================================================
+
 function! GetTilingMode(mode) "<<<
-  if !exists("t:windowMode") 
+  if !exists("t:windowMode")
     let t:windowMode = a:mode
-  endif 
+  endif
 endfunction ">>>
+
 function! SetTilingMode(mode) "<<<
   " apply new window mode
   if a:mode == "F"        " Fullscreen mode
     let t:windowSizes = winrestcmd()
     wincmd |              "   maximize current window vertically and horizontally
-    res
+    wincmd _
   elseif a:mode == "D"    " Divided mode
     wincmd n              "   create a new window and delete it
     wincmd c
   elseif a:mode == "S"    " Stacked mode
-    res                   "   maximize current window vertically
+    wincmd _              "   maximize current window vertically
   endif
 
   " when getting back from fullscreen mode, restore all minimum widths
@@ -191,6 +205,7 @@ function! SetTilingMode(mode) "<<<
   " store the new window mode in the current tab's global variables
   let t:windowMode = a:mode
 endfunction ">>>
+
 function! WindowCmd(cmd) "<<<
 
   " issue the corresponding 'wincmd'
@@ -259,11 +274,11 @@ function! WindowCmd(cmd) "<<<
   " resize window according to the current window mode
   if t:windowMode == "F"
     " 'Fullscreen' mode
-    res        " maximize window height
+    wincmd _   " maximize window height
     wincmd |   " maximize window width
   elseif winheight(0) <= 1
     " window is collapsed, this column must be in 'stacked' mode
-    res        " maximize window height
+    wincmd _   " maximize window height
   endif
 
   " ensure the window width is greater or equal to the minimum
@@ -271,6 +286,7 @@ function! WindowCmd(cmd) "<<<
     exe "set winwidth=" . g:SucklessMinWidth
   endif
 endfunction ">>>
+
 function! WindowMove(direction) "<<<
   let winnr = winnr()
   let bufnr = bufnr("%")
@@ -301,18 +317,19 @@ function! WindowMove(direction) "<<<
       wincmd p
       wincmd c
       if t:windowMode == "S"
-        res " maximize window height
+        wincmd _ " maximize window height
       endif
       exe newwinnr . "wincmd w"
       wincmd n
       if t:windowMode == "S"
-        res " maximize window height
+        wincmd _ " maximize window height
       endif
       exe "b" . bufnr
     endif
 
   endif
 endfunction ">>>
+
 function! WindowResize(direction) "<<<
   let winnr = winnr()
 
@@ -362,45 +379,53 @@ function! WindowResize(direction) "<<<
 
   endif
 endfunction ">>>
+
 function! WindowCollapse() "<<<
   "if t:windowMode == "D"
     res0
   "endif
 endfunction ">>>
+
 function! WindowClose() "<<<
   "exe "bd"
   wincmd c
   if t:windowMode == "S"
-    res
+    wincmd _
   endif
 endfunction ">>>
+
 ">>>
 
-" keyboard mappings, Tab management <<<
+"|============================================================================
+"|    keyboard mappings, Tab management                                    <<<
+"|============================================================================
+
 " Alt+[0..9]: select Tab [1..10] <<<
-" GUI/xterm
-noremap <silent>  <A-1> :tabn  1<CR>
-noremap <silent>  <A-2> :tabn  2<CR>
-noremap <silent>  <A-3> :tabn  3<CR>
-noremap <silent>  <A-4> :tabn  4<CR>
-noremap <silent>  <A-5> :tabn  5<CR>
-noremap <silent>  <A-6> :tabn  6<CR>
-noremap <silent>  <A-7> :tabn  7<CR>
-noremap <silent>  <A-8> :tabn  8<CR>
-noremap <silent>  <A-9> :tabn  9<CR>
-noremap <silent>  <A-0> :tabn 10<CR>
-" Alt+[0..9], rxvt
-noremap <silent> <Esc>1 :tabn  1<CR>
-noremap <silent> <Esc>2 :tabn  2<CR>
-noremap <silent> <Esc>3 :tabn  3<CR>
-noremap <silent> <Esc>4 :tabn  4<CR>
-noremap <silent> <Esc>5 :tabn  5<CR>
-noremap <silent> <Esc>6 :tabn  6<CR>
-noremap <silent> <Esc>7 :tabn  7<CR>
-noremap <silent> <Esc>8 :tabn  8<CR>
-noremap <silent> <Esc>9 :tabn  9<CR>
-noremap <silent> <Esc>0 :tabn 10<CR>
+if g:MetaSendsEscape
+  noremap <silent> <Esc>1 :tabn  1<CR>
+  noremap <silent> <Esc>2 :tabn  2<CR>
+  noremap <silent> <Esc>3 :tabn  3<CR>
+  noremap <silent> <Esc>4 :tabn  4<CR>
+  noremap <silent> <Esc>5 :tabn  5<CR>
+  noremap <silent> <Esc>6 :tabn  6<CR>
+  noremap <silent> <Esc>7 :tabn  7<CR>
+  noremap <silent> <Esc>8 :tabn  8<CR>
+  noremap <silent> <Esc>9 :tabn  9<CR>
+  noremap <silent> <Esc>0 :tabn 10<CR>
+else
+  noremap <silent>  <A-1> :tabn  1<CR>
+  noremap <silent>  <A-2> :tabn  2<CR>
+  noremap <silent>  <A-3> :tabn  3<CR>
+  noremap <silent>  <A-4> :tabn  4<CR>
+  noremap <silent>  <A-5> :tabn  5<CR>
+  noremap <silent>  <A-6> :tabn  6<CR>
+  noremap <silent>  <A-7> :tabn  7<CR>
+  noremap <silent>  <A-8> :tabn  8<CR>
+  noremap <silent>  <A-9> :tabn  9<CR>
+  noremap <silent>  <A-0> :tabn 10<CR>
+endif
 ">>>
+
 " <Leader>[1..0]: select Tab [1..10] <<<
 noremap <silent> <Leader>1 :tabn  1<CR>
 noremap <silent> <Leader>2 :tabn  2<CR>
@@ -413,6 +438,7 @@ noremap <silent> <Leader>8 :tabn  8<CR>
 noremap <silent> <Leader>9 :tabn  9<CR>
 noremap <silent> <Leader>0 :tabn 10<CR>
 ">>>
+
 " <Leader>t[1..0]: move current window to Tab [1..10] <<<
 noremap <silent> <Leader>t1 :call MoveToTab( 1,0)<CR>
 noremap <silent> <Leader>t2 :call MoveToTab( 2,0)<CR>
@@ -425,6 +451,7 @@ noremap <silent> <Leader>t8 :call MoveToTab( 8,0)<CR>
 noremap <silent> <Leader>t9 :call MoveToTab( 9,0)<CR>
 noremap <silent> <Leader>t0 :call MoveToTab(10,0)<CR>
 ">>>
+
 " <Leader>T[1..0]: copy current window to Tab [1..10] <<<
 noremap <silent> <Leader>T1 :call MoveToTab( 1,1)<CR>
 noremap <silent> <Leader>T2 :call MoveToTab( 2,1)<CR>
@@ -437,70 +464,92 @@ noremap <silent> <Leader>T8 :call MoveToTab( 8,1)<CR>
 noremap <silent> <Leader>T9 :call MoveToTab( 9,1)<CR>
 noremap <silent> <Leader>T0 :call MoveToTab(10,1)<CR>
 ">>>
+
 ">>>
 
-" keyboard mappings, Window management <<<
+"|============================================================================
+"|    keyboard mappings, Window management                                 <<<
+"|============================================================================
+
 " Alt+[sdf]: Window mode selection <<<
-noremap <silent>  <A-s> :call SetTilingMode("S")<CR>
-noremap <silent>  <A-d> :call SetTilingMode("D")<CR>
-noremap <silent>  <A-f> :call SetTilingMode("F")<CR>
-"
-noremap <silent> <Esc>s :call SetTilingMode("S")<CR>
-noremap <silent> <Esc>d :call SetTilingMode("D")<CR>
-noremap <silent> <Esc>f :call SetTilingMode("F")<CR>
+if g:MetaSendsEscape
+  noremap <silent> <Esc>s :call SetTilingMode("S")<CR>
+  noremap <silent> <Esc>d :call SetTilingMode("D")<CR>
+  noremap <silent> <Esc>f :call SetTilingMode("F")<CR>
+else
+  noremap <silent>  <A-s> :call SetTilingMode("S")<CR>
+  noremap <silent>  <A-d> :call SetTilingMode("D")<CR>
+  noremap <silent>  <A-f> :call SetTilingMode("F")<CR>
+endif
 ">>>
+
 " Alt+[hjkl]: select window <<<
-noremap <silent>  <A-h> :call WindowCmd("h")<CR>
-noremap <silent>  <A-j> :call WindowCmd("j")<CR>
-noremap <silent>  <A-k> :call WindowCmd("k")<CR>
-noremap <silent>  <A-l> :call WindowCmd("l")<CR>
-"
-noremap <silent> <Esc>h :call WindowCmd("h")<CR>
-noremap <silent> <Esc>j :call WindowCmd("j")<CR>
-noremap <silent> <Esc>k :call WindowCmd("k")<CR>
-noremap <silent> <Esc>l :call WindowCmd("l")<CR>
+if g:MetaSendsEscape
+  noremap <silent> <Esc>h :call WindowCmd("h")<CR>
+  noremap <silent> <Esc>j :call WindowCmd("j")<CR>
+  noremap <silent> <Esc>k :call WindowCmd("k")<CR>
+  noremap <silent> <Esc>l :call WindowCmd("l")<CR>
+else
+  noremap <silent>  <A-h> :call WindowCmd("h")<CR>
+  noremap <silent>  <A-j> :call WindowCmd("j")<CR>
+  noremap <silent>  <A-k> :call WindowCmd("k")<CR>
+  noremap <silent>  <A-l> :call WindowCmd("l")<CR>
+endif
 ">>>
+
 " Alt+[HJKL]: move current window <<<
-noremap <silent> <S-A-h> :call WindowMove("h")<CR>
-noremap <silent> <S-A-j> :call WindowMove("j")<CR>
-noremap <silent> <S-A-k> :call WindowMove("k")<CR>
-noremap <silent> <S-A-l> :call WindowMove("l")<CR>
-"
-noremap <silent>  <Esc>H :call WindowMove("h")<CR>
-noremap <silent>  <Esc>J :call WindowMove("j")<CR>
-noremap <silent>  <Esc>K :call WindowMove("k")<CR>
-noremap <silent>  <Esc>L :call WindowMove("l")<CR>
+if g:MetaSendsEscape
+  noremap <silent>  <Esc>H :call WindowMove("h")<CR>
+  noremap <silent>  <Esc>J :call WindowMove("j")<CR>
+  noremap <silent>  <Esc>K :call WindowMove("k")<CR>
+  noremap <silent>  <Esc>L :call WindowMove("l")<CR>
+else
+  noremap <silent> <S-A-h> :call WindowMove("h")<CR>
+  noremap <silent> <S-A-j> :call WindowMove("j")<CR>
+  noremap <silent> <S-A-k> :call WindowMove("k")<CR>
+  noremap <silent> <S-A-l> :call WindowMove("l")<CR>
+endif
 ">>>
+
 " Ctrl+Alt+[hjkl]: resize current window <<<
-noremap <silent>    <C-A-h> :call WindowResize("h")<CR>
-noremap <silent>    <C-A-j> :call WindowResize("j")<CR>
-noremap <silent>    <C-A-k> :call WindowResize("k")<CR>
-noremap <silent>    <C-A-l> :call WindowResize("l")<CR>
-"
-noremap <silent> <Esc><C-h> :call WindowResize("h")<CR>
-noremap <silent> <Esc><C-j> :call WindowResize("j")<CR>
-noremap <silent> <Esc><C-k> :call WindowResize("k")<CR>
-noremap <silent> <Esc><C-l> :call WindowResize("l")<CR>
-">>>
+if g:MetaSendsEscape
+  noremap <silent> <Esc><C-h> :call WindowResize("h")<CR>
+  noremap <silent> <Esc><C-j> :call WindowResize("j")<CR>
+  noremap <silent> <Esc><C-k> :call WindowResize("k")<CR>
+  noremap <silent> <Esc><C-l> :call WindowResize("l")<CR>
+else
+  noremap <silent>    <C-A-h> :call WindowResize("h")<CR>
+  noremap <silent>    <C-A-j> :call WindowResize("j")<CR>
+  noremap <silent>    <C-A-k> :call WindowResize("k")<CR>
+  noremap <silent>    <C-A-l> :call WindowResize("l")<CR>
+endif
 ">>>
 
-" other mappings <<<
-"
-" new horizontal/vertical window
-" Alt+[oO]
-noremap <silent>   <A-o> :call WindowCmd("n")<CR>
-"noremap <silent> <S-A-o> :call WindowCmd("n")<CR>:call WindowMove("l")<CR>
-noremap <silent>  <Esc>o :call WindowCmd("n")<CR>
-"noremap <silent>  <Esc>O :call WindowCmd("n")<CR>:call WindowMove("l")<CR>
-"
+">>>
+
+"|============================================================================
+"|    other mappings                                                       <<<
+"|============================================================================
+
+" Alt+[oO]: new horizontal/vertical window
 " Alt+[cC]: collapse/close current window
-noremap <silent>   <A-c> :call WindowCollapse()<CR>
-noremap <silent> <S-A-c> :call WindowCmd("c")<CR>
-noremap <silent>  <Esc>c :call WindowCollapse()<CR>
-noremap <silent>  <Esc>C :call WindowCmd("c")<CR>
+if g:MetaSendsEscape
+  noremap <silent>  <Esc>o :call WindowCmd("n")<CR>
+  "noremap <silent>  <Esc>O :call WindowCmd("n")<CR>:call WindowMove("l")<CR>
+  noremap <silent>  <Esc>c :call WindowCollapse()<CR>
+  noremap <silent>  <Esc>C :call WindowCmd("c")<CR>
+else
+  noremap <silent>   <A-o> :call WindowCmd("n")<CR>
+  "noremap <silent> <S-A-o> :call WindowCmd("n")<CR>:call WindowMove("l")<CR>
+  noremap <silent>   <A-c> :call WindowCollapse()<CR>
+  noremap <silent> <S-A-c> :call WindowCmd("c")<CR>
+endif
 ">>>
 
-" TODO (not working yet) <<<
+"|============================================================================
+"|    TODO (not working yet)                                               <<<
+"|============================================================================
+
 " tiling modes <<<
 " Two modes should be possible:
 "  * wmii: use as many columns as you want
@@ -518,6 +567,7 @@ noremap <silent>  <Esc>C :call WindowCmd("c")<CR>
 "
 " I think the wmii-mode makes much more sense for Vim anyway. ;-)
 " >>>
+
 " preferences <<<
 " Preferences: key mappings to handle windows and tabs
 " Warning, using <Alt-key> shortcuts is very handy but it can be tricky:
@@ -537,6 +587,7 @@ let g:SucklessTilingEmulation = 1 " 0 = none - define your own!
                                   " 1 = wmii-style (preferred)
                                   " 2 = dwm-style (not working yet)
 " >>>
+
 " Master window (dwm mode) <<<
 function! WindowMaster()
   " swap from/to master area
@@ -566,16 +617,18 @@ function! WindowMaster()
     wincmd h
   endif
 endfunction ">>>
+
 " 'Project' sidebar <<<
 function! Sidebar()
   if g:loaded_project == 1 && (!exists('g:proj_running') || bufwinnr(g:proj_running) == -1)
     Project   " call Project if hidden
-  elseif bufwinnr(winnr()) < 0 
+  elseif bufwinnr(winnr()) < 0
     wincmd p  " we're in the Sidebar, get back to the buffer window
   else
     wincmd t  " we're in a buffer window, go to the Project Sidebar
   endif
 endfunction ">>>
+
 " >>>
 
 if has("autocmd")
@@ -583,7 +636,7 @@ if has("autocmd")
   "autocmd! bufwritepost suckless.vim source ~/.vim/plugin/suckless.vim
   " 'Divided' mode by default - each tab has its own window mode
   autocmd! TabEnter * call GetTilingMode("D")
-endif 
+endif
 call GetTilingMode("D")
 
-" vim: set foldmethod=marker foldmarker=<<<,>>> foldlevel=0:
+" vim: set fdm=marker fmr=<<<,>>> fdl=0:
