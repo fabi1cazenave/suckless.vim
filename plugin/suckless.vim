@@ -402,67 +402,67 @@ endfunction ">>>
 
 " Alt+[0..9]: select Tab [1..10] <<<
 if g:MetaSendsEscape
-  noremap <silent> <Esc>1 :tabn  1<CR>
-  noremap <silent> <Esc>2 :tabn  2<CR>
-  noremap <silent> <Esc>3 :tabn  3<CR>
-  noremap <silent> <Esc>4 :tabn  4<CR>
-  noremap <silent> <Esc>5 :tabn  5<CR>
-  noremap <silent> <Esc>6 :tabn  6<CR>
-  noremap <silent> <Esc>7 :tabn  7<CR>
-  noremap <silent> <Esc>8 :tabn  8<CR>
-  noremap <silent> <Esc>9 :tabn  9<CR>
-  noremap <silent> <Esc>0 :tabn 10<CR>
+  nnoremap <silent> <Esc>1 :tabn  1<CR>
+  nnoremap <silent> <Esc>2 :tabn  2<CR>
+  nnoremap <silent> <Esc>3 :tabn  3<CR>
+  nnoremap <silent> <Esc>4 :tabn  4<CR>
+  nnoremap <silent> <Esc>5 :tabn  5<CR>
+  nnoremap <silent> <Esc>6 :tabn  6<CR>
+  nnoremap <silent> <Esc>7 :tabn  7<CR>
+  nnoremap <silent> <Esc>8 :tabn  8<CR>
+  nnoremap <silent> <Esc>9 :tabn  9<CR>
+  nnoremap <silent> <Esc>0 :tabn 10<CR>
 else
-  noremap <silent>  <A-1> :tabn  1<CR>
-  noremap <silent>  <A-2> :tabn  2<CR>
-  noremap <silent>  <A-3> :tabn  3<CR>
-  noremap <silent>  <A-4> :tabn  4<CR>
-  noremap <silent>  <A-5> :tabn  5<CR>
-  noremap <silent>  <A-6> :tabn  6<CR>
-  noremap <silent>  <A-7> :tabn  7<CR>
-  noremap <silent>  <A-8> :tabn  8<CR>
-  noremap <silent>  <A-9> :tabn  9<CR>
-  noremap <silent>  <A-0> :tabn 10<CR>
+  nnoremap <silent>  <M-1> :tabn  1<CR>
+  nnoremap <silent>  <M-2> :tabn  2<CR>
+  nnoremap <silent>  <M-3> :tabn  3<CR>
+  nnoremap <silent>  <M-4> :tabn  4<CR>
+  nnoremap <silent>  <M-5> :tabn  5<CR>
+  nnoremap <silent>  <M-6> :tabn  6<CR>
+  nnoremap <silent>  <M-7> :tabn  7<CR>
+  nnoremap <silent>  <M-8> :tabn  8<CR>
+  nnoremap <silent>  <M-9> :tabn  9<CR>
+  nnoremap <silent>  <M-0> :tabn 10<CR>
 endif
 ">>>
 
 " <Leader>[1..0]: select Tab [1..10] <<<
-noremap <silent> <Leader>1 :tabn  1<CR>
-noremap <silent> <Leader>2 :tabn  2<CR>
-noremap <silent> <Leader>3 :tabn  3<CR>
-noremap <silent> <Leader>4 :tabn  4<CR>
-noremap <silent> <Leader>5 :tabn  5<CR>
-noremap <silent> <Leader>6 :tabn  6<CR>
-noremap <silent> <Leader>7 :tabn  7<CR>
-noremap <silent> <Leader>8 :tabn  8<CR>
-noremap <silent> <Leader>9 :tabn  9<CR>
-noremap <silent> <Leader>0 :tabn 10<CR>
+nnoremap <silent> <Leader>1 :tabn  1<CR>
+nnoremap <silent> <Leader>2 :tabn  2<CR>
+nnoremap <silent> <Leader>3 :tabn  3<CR>
+nnoremap <silent> <Leader>4 :tabn  4<CR>
+nnoremap <silent> <Leader>5 :tabn  5<CR>
+nnoremap <silent> <Leader>6 :tabn  6<CR>
+nnoremap <silent> <Leader>7 :tabn  7<CR>
+nnoremap <silent> <Leader>8 :tabn  8<CR>
+nnoremap <silent> <Leader>9 :tabn  9<CR>
+nnoremap <silent> <Leader>0 :tabn 10<CR>
 ">>>
 
 " <Leader>t[1..0]: move current window to Tab [1..10] <<<
-noremap <silent> <Leader>t1 :call MoveToTab( 1,0)<CR>
-noremap <silent> <Leader>t2 :call MoveToTab( 2,0)<CR>
-noremap <silent> <Leader>t3 :call MoveToTab( 3,0)<CR>
-noremap <silent> <Leader>t4 :call MoveToTab( 4,0)<CR>
-noremap <silent> <Leader>t5 :call MoveToTab( 5,0)<CR>
-noremap <silent> <Leader>t6 :call MoveToTab( 6,0)<CR>
-noremap <silent> <Leader>t7 :call MoveToTab( 7,0)<CR>
-noremap <silent> <Leader>t8 :call MoveToTab( 8,0)<CR>
-noremap <silent> <Leader>t9 :call MoveToTab( 9,0)<CR>
-noremap <silent> <Leader>t0 :call MoveToTab(10,0)<CR>
+nnoremap <silent> <Leader>t1 :call MoveToTab( 1,0)<CR>
+nnoremap <silent> <Leader>t2 :call MoveToTab( 2,0)<CR>
+nnoremap <silent> <Leader>t3 :call MoveToTab( 3,0)<CR>
+nnoremap <silent> <Leader>t4 :call MoveToTab( 4,0)<CR>
+nnoremap <silent> <Leader>t5 :call MoveToTab( 5,0)<CR>
+nnoremap <silent> <Leader>t6 :call MoveToTab( 6,0)<CR>
+nnoremap <silent> <Leader>t7 :call MoveToTab( 7,0)<CR>
+nnoremap <silent> <Leader>t8 :call MoveToTab( 8,0)<CR>
+nnoremap <silent> <Leader>t9 :call MoveToTab( 9,0)<CR>
+nnoremap <silent> <Leader>t0 :call MoveToTab(10,0)<CR>
 ">>>
 
 " <Leader>T[1..0]: copy current window to Tab [1..10] <<<
-noremap <silent> <Leader>T1 :call MoveToTab( 1,1)<CR>
-noremap <silent> <Leader>T2 :call MoveToTab( 2,1)<CR>
-noremap <silent> <Leader>T3 :call MoveToTab( 3,1)<CR>
-noremap <silent> <Leader>T4 :call MoveToTab( 4,1)<CR>
-noremap <silent> <Leader>T5 :call MoveToTab( 5,1)<CR>
-noremap <silent> <Leader>T6 :call MoveToTab( 6,1)<CR>
-noremap <silent> <Leader>T7 :call MoveToTab( 7,1)<CR>
-noremap <silent> <Leader>T8 :call MoveToTab( 8,1)<CR>
-noremap <silent> <Leader>T9 :call MoveToTab( 9,1)<CR>
-noremap <silent> <Leader>T0 :call MoveToTab(10,1)<CR>
+nnoremap <silent> <Leader>T1 :call MoveToTab( 1,1)<CR>
+nnoremap <silent> <Leader>T2 :call MoveToTab( 2,1)<CR>
+nnoremap <silent> <Leader>T3 :call MoveToTab( 3,1)<CR>
+nnoremap <silent> <Leader>T4 :call MoveToTab( 4,1)<CR>
+nnoremap <silent> <Leader>T5 :call MoveToTab( 5,1)<CR>
+nnoremap <silent> <Leader>T6 :call MoveToTab( 6,1)<CR>
+nnoremap <silent> <Leader>T7 :call MoveToTab( 7,1)<CR>
+nnoremap <silent> <Leader>T8 :call MoveToTab( 8,1)<CR>
+nnoremap <silent> <Leader>T9 :call MoveToTab( 9,1)<CR>
+nnoremap <silent> <Leader>T0 :call MoveToTab(10,1)<CR>
 ">>>
 
 ">>>
@@ -473,55 +473,55 @@ noremap <silent> <Leader>T0 :call MoveToTab(10,1)<CR>
 
 " Alt+[sdf]: Window mode selection <<<
 if g:MetaSendsEscape
-  noremap <silent> <Esc>s :call SetTilingMode("S")<CR>
-  noremap <silent> <Esc>d :call SetTilingMode("D")<CR>
-  noremap <silent> <Esc>f :call SetTilingMode("F")<CR>
+  nnoremap <silent> <Esc>s :call SetTilingMode("S")<CR>
+  nnoremap <silent> <Esc>d :call SetTilingMode("D")<CR>
+  nnoremap <silent> <Esc>f :call SetTilingMode("F")<CR>
 else
-  noremap <silent>  <A-s> :call SetTilingMode("S")<CR>
-  noremap <silent>  <A-d> :call SetTilingMode("D")<CR>
-  noremap <silent>  <A-f> :call SetTilingMode("F")<CR>
+  nnoremap <silent>  <M-s> :call SetTilingMode("S")<CR>
+  nnoremap <silent>  <M-d> :call SetTilingMode("D")<CR>
+  nnoremap <silent>  <M-f> :call SetTilingMode("F")<CR>
 endif
 ">>>
 
 " Alt+[hjkl]: select window <<<
 if g:MetaSendsEscape
-  noremap <silent> <Esc>h :call WindowCmd("h")<CR>
-  noremap <silent> <Esc>j :call WindowCmd("j")<CR>
-  noremap <silent> <Esc>k :call WindowCmd("k")<CR>
-  noremap <silent> <Esc>l :call WindowCmd("l")<CR>
+  nnoremap <silent> <Esc>h :call WindowCmd("h")<CR>
+  nnoremap <silent> <Esc>j :call WindowCmd("j")<CR>
+  nnoremap <silent> <Esc>k :call WindowCmd("k")<CR>
+  nnoremap <silent> <Esc>l :call WindowCmd("l")<CR>
 else
-  noremap <silent>  <A-h> :call WindowCmd("h")<CR>
-  noremap <silent>  <A-j> :call WindowCmd("j")<CR>
-  noremap <silent>  <A-k> :call WindowCmd("k")<CR>
-  noremap <silent>  <A-l> :call WindowCmd("l")<CR>
+  nnoremap <silent>  <M-h> :call WindowCmd("h")<CR>
+  nnoremap <silent>  <M-j> :call WindowCmd("j")<CR>
+  nnoremap <silent>  <M-k> :call WindowCmd("k")<CR>
+  nnoremap <silent>  <M-l> :call WindowCmd("l")<CR>
 endif
 ">>>
 
 " Alt+[HJKL]: move current window <<<
 if g:MetaSendsEscape
-  noremap <silent>  <Esc>H :call WindowMove("h")<CR>
-  noremap <silent>  <Esc>J :call WindowMove("j")<CR>
-  noremap <silent>  <Esc>K :call WindowMove("k")<CR>
-  noremap <silent>  <Esc>L :call WindowMove("l")<CR>
+  nnoremap <silent>  <Esc>H :call WindowMove("h")<CR>
+  nnoremap <silent>  <Esc>J :call WindowMove("j")<CR>
+  nnoremap <silent>  <Esc>K :call WindowMove("k")<CR>
+  nnoremap <silent>  <Esc>L :call WindowMove("l")<CR>
 else
-  noremap <silent> <S-A-h> :call WindowMove("h")<CR>
-  noremap <silent> <S-A-j> :call WindowMove("j")<CR>
-  noremap <silent> <S-A-k> :call WindowMove("k")<CR>
-  noremap <silent> <S-A-l> :call WindowMove("l")<CR>
+  nnoremap <silent> <S-M-h> :call WindowMove("h")<CR>
+  nnoremap <silent> <S-M-j> :call WindowMove("j")<CR>
+  nnoremap <silent> <S-M-k> :call WindowMove("k")<CR>
+  nnoremap <silent> <S-M-l> :call WindowMove("l")<CR>
 endif
 ">>>
 
 " Ctrl+Alt+[hjkl]: resize current window <<<
 if g:MetaSendsEscape
-  noremap <silent> <Esc><C-h> :call WindowResize("h")<CR>
-  noremap <silent> <Esc><C-j> :call WindowResize("j")<CR>
-  noremap <silent> <Esc><C-k> :call WindowResize("k")<CR>
-  noremap <silent> <Esc><C-l> :call WindowResize("l")<CR>
+  nnoremap <silent> <Esc><C-h> :call WindowResize("h")<CR>
+  nnoremap <silent> <Esc><C-j> :call WindowResize("j")<CR>
+  nnoremap <silent> <Esc><C-k> :call WindowResize("k")<CR>
+  nnoremap <silent> <Esc><C-l> :call WindowResize("l")<CR>
 else
-  noremap <silent>    <C-A-h> :call WindowResize("h")<CR>
-  noremap <silent>    <C-A-j> :call WindowResize("j")<CR>
-  noremap <silent>    <C-A-k> :call WindowResize("k")<CR>
-  noremap <silent>    <C-A-l> :call WindowResize("l")<CR>
+  nnoremap <silent>    <C-M-h> :call WindowResize("h")<CR>
+  nnoremap <silent>    <C-M-j> :call WindowResize("j")<CR>
+  nnoremap <silent>    <C-M-k> :call WindowResize("k")<CR>
+  nnoremap <silent>    <C-M-l> :call WindowResize("l")<CR>
 endif
 ">>>
 
@@ -531,19 +531,27 @@ endif
 "|    other mappings                                                       <<<
 "|============================================================================
 
-" Alt+[oO]: new horizontal/vertical window
-" Alt+[cC]: collapse/close current window
+" Alt+[oO]: new horizontal/vertical window <<<
+" Note: Alt+O is disabled because it messes the arrow key behavior on my box
 if g:MetaSendsEscape
-  noremap <silent>  <Esc>o :call WindowCmd("n")<CR>
-  "noremap <silent>  <Esc>O :call WindowCmd("n")<CR>:call WindowMove("l")<CR>
-  noremap <silent>  <Esc>c :call WindowCollapse()<CR>
-  noremap <silent>  <Esc>C :call WindowCmd("c")<CR>
+  nnoremap <silent>  <Esc>o :call WindowCmd("n")<CR>
+  "nnoremap <silent>  <Esc>O :call WindowCmd("n")<CR>:call WindowMove("l")<CR>
 else
-  noremap <silent>   <A-o> :call WindowCmd("n")<CR>
-  "noremap <silent> <S-A-o> :call WindowCmd("n")<CR>:call WindowMove("l")<CR>
-  noremap <silent>   <A-c> :call WindowCollapse()<CR>
-  noremap <silent> <S-A-c> :call WindowCmd("c")<CR>
+  nnoremap <silent>   <M-o> :call WindowCmd("n")<CR>
+  "nnoremap <silent> <S-M-o> :call WindowCmd("n")<CR>:call WindowMove("l")<CR>
 endif
+">>>
+
+" Alt+[cC]: collapse/close current window <<<
+if g:MetaSendsEscape
+  nnoremap <silent>  <Esc>c :call WindowCollapse()<CR>
+  nnoremap <silent>  <Esc>C :call WindowCmd("c")<CR>
+else
+  nnoremap <silent>   <M-c> :call WindowCollapse()<CR>
+  nnoremap <silent> <S-M-c> :call WindowCmd("c")<CR>
+endif
+">>>
+
 ">>>
 
 "|============================================================================
@@ -573,7 +581,7 @@ endif
 " Warning, using <Alt-key> shortcuts is very handy but it can be tricky:
 "  * may conflict with dwm/wmii - set the <Mod> key to <win> for your wm
 "  * may conflict with gVim     - disable the menu to avoid this
-"  * may raise problems in your terminal emulator (e.g. <A-s> on rxvt)
+"  * may raise problems in your terminal emulator (e.g. <M-s> on rxvt)
 "  * Shift+Alt+number only works on the US-Qwerty keyboard layout
 let g:SucklessWinKeyMappings = 3  " 0 = none - define your own!
                                   " 1 = <Leader> + key(s)
