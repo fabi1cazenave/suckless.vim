@@ -7,17 +7,21 @@ Instructions
 
 For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by default:
 
-         Alt+[sdf]  => tiling mode selection: [s]tacked, [d]ivided, [f]ullscreen
-         Alt+[hjkl] => select adjacent window
-         Alt+[HJKL] => move current window
-    Ctrl+Alt+[hjkl] => resize current window
+         Alt+[sdf]  ⇒ tiling mode selection: [s]tacked, [d]ivided, [f]ullscreen
+         Alt+[hjkl] ⇒ select adjacent window
+         Alt+[HJKL] ⇒ move current window
+    Ctrl+Alt+[hjkl] ⇒ resize current window
+
+              Alt+o ⇒ create new window
+              Alt+c ⇒ collapse window
+              Alt+w ⇒ close window
 
 Vim tabs are used as “views”:
 
-         Alt+[1234567890] => select tab [1..10]
-     <Leader>[1234567890] => select tab [1..10]
-    <Leader>t[1234567890] => move current window to tab [1..10]
-    <Leader>T[1234567890] => copy current window to tab [1..10]
+         Alt+[1234567890] ⇒ select tab [1..10]
+     <Leader>[1234567890] ⇒ select tab [1..10]
+    <Leader>t[1234567890] ⇒ move current window to tab [1..10]
+    <Leader>T[1234567890] ⇒ copy current window to tab [1..10]
 
 
 Install details
@@ -34,7 +38,7 @@ defining <kbd>Alt</kbd> shortcuts in Vim can be tricky… Here’s a quick help 
 your <kbd>Alt</kbd> shortcuts don’t work as expected.
 
 On Windows and GNU/Linux the <kbd>Alt</kbd> key can either:
-- modify the 8th bit of the current character, i.e. <kbd>Alt</kbd><kbd>j</kbd> outputs a ```ê```
+- modify the 8th bit of the current character, i.e. <kbd>Alt</kbd><kbd>j</kbd> outputs a `ê`
   — that’s what gVim does, and that’s xterm’s default behaviour;
 - send an <kbd>Esc</kbd> along with the key, i.e. <kbd>Alt</kbd><kbd>j</kbd> outputs <kbd>Esc</kbd><kbd>j</kbd>
   — this is sometimes referred to as an “8-bit clean” behavior, and that’s the
@@ -55,5 +59,5 @@ If you’re not pleased with <kbd>Alt-\*</kbd> shortcuts, you’ll have to defin
 Feedback
 --------------------------------------------------------------------------------
 
-This is my very first Vim plugin, so there should be a good bunch of mistakes… feel free to submit corrections, enhancements and suggestions.
+Bug reports, suggestions and pull requests are welcome.
 
