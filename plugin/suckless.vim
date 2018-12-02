@@ -1,11 +1,12 @@
 "|
-"| File          : ~/.vim/plugin/suckless.vim
-"| Project page  : https://github.com/fabi1cazenave/suckless.vim
-"| Author        : Fabien Cazenave
-"| Licence       : WTFPL
+"| File    : ~/.vim/plugin/suckless.vim
+"| File    : ~/.config/nvim/plugin/suckless.vim
+"| Source  : https://github.com/fabi1cazenave/suckless.vim
+"| Author  : Fabien Cazenave
+"| Licence : WTFPL
 "|
 "| Tiling window management that sucks less - see http://suckless.org/
-"| This emulates wmii/i3 in Vim as much as possible.
+"| This emulates wmii/i3 in Vim & Neovim as much as possible.
 "|
 
 " Preferences: window resizing
@@ -21,10 +22,29 @@ let g:SucklessWrapAroundHL = 1    " 0 = no wrap
                                   " 1 = wrap in current tab    (wmii-like)
                                   " 2 = wrap in all tabs
 
-" in gVim, Alt sets the 8th bit; otherwise, assume the terminal is 8-bit clean
-" Neovim isn't 8-bit clean yet, see https://github.com/neovim/neovim/issues/3727
-if !exists("g:MetaSendsEscape")
-  let g:MetaSendsEscape = !has("gui_running") && !has("nvim")
+" Notes about the Alt key... {{{
+" Neovim users, you can ignore this paragraph. Enjoy!
+" Vim users, I'm afraid that <Alt>-shortcuts are tricky with Vim:
+"
+"  * with xterm, gVim and MacVim, the Alt key sets the 8th bit
+"    (e.g. Alt-j sends an "ê", and an "ê" is detected as Alt-j by Vim)
+"    -- this is acceptable if you don't use any accented character;
+"
+"  * with most modern terminal emulators, the Alt key sends an <Esc>
+"    (e.g. Alt-j sends <Esc>j, a.k.a. "8bit-clean" behavior)
+"    -- this is acceptable if you don't mind the 'timeoutlen' after each <Esc>.
+"
+" When using Vim on MacOSX, you can set the `macmeta` option.
+" When using gVim, here's a quick and dirty way to free all <Alt> shortcuts:
+"     set guioptions-=m
+"
+" Vim users should set the "g:MetaSendsEscape" variable to specify the behavior.
+" If unset, assume the terminal is 8-bit clean and gVim sets the 8th bit.
+" }}}
+if has('nvim')
+  let g:MetaSendsEscape = 0
+elseif !exists('g:MetaSendsEscape')
+  let g:MetaSendsEscape = !has('gui_running')
 endif
 
 "|    Tabs / views: organize windows in tabs                                {{{
