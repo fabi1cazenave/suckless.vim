@@ -588,13 +588,12 @@ endif
 "|-----------------------------------------------------------------------------
 
 " Alt+[oO]: new horizontal/vertical window {{{
-" Note: Alt+O is disabled because it messes the arrow key behavior on my box
 if g:MetaSendsEscape
   nnoremap <silent>  <Esc>o :call WindowCreate("s")<CR>
-  "nnoremap <silent>  <Esc>O :call WindowCreate("v")<CR>
+  nnoremap <silent>  <Esc>O :call WindowCreate("v")<CR>
 else
   nnoremap <silent>   <M-o> :call WindowCreate("s")<CR>
-  "nnoremap <silent> <S-M-o> :call WindowCreate("v")<CR>
+  nnoremap <silent> <S-M-o> :call WindowCreate("v")<CR>
 endif
 "}}}
 
