@@ -339,7 +339,7 @@ function! WindowMove(direction) "{{{
       if t:windowMode == "S"
         wincmd _
       endif
-      exe newwinnr . "wincmd w"
+      exe (newwinnr - (a:direction == "l")) . "wincmd w"
       wincmd n
       if t:windowMode == "S"
         wincmd _
