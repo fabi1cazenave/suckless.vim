@@ -10,47 +10,28 @@
 "|
 
 " Preferences: window resizing
-let g:SucklessMinWidth = 24       " minimum window width
-let g:SucklessIncWidth = 12       " width increment
-let g:SucklessIncHeight = 6       " height increment
-
-" Preferences: wrap-around modes for window selection
-let g:SucklessWrapAroundJK = 1    " 0 = no wrap
-                                  " 1 = wrap in current column (wmii-like)
-                                  " 2 = wrap in current tab    (dwm-like)
-let g:SucklessWrapAroundHL = 1    " 0 = no wrap
-                                  " 1 = wrap in current tab    (wmii-like)
-                                  " 2 = wrap in all tabs
-
-" Notes about the Alt key... {{{
-" Neovim users, you can ignore this paragraph. Enjoy!
-" Vim users, I'm afraid that <Alt>-shortcuts are tricky with Vim:
-"
-"  * with xterm, gVim and MacVim, the Alt key sets the 8th bit
-"    (e.g. Alt-j sends an "ê", and an "ê" is detected as Alt-j by Vim)
-"    -- this is acceptable if you don't use any accented character;
-"
-"  * with most modern terminal emulators, the Alt key sends an <Esc>
-"    (e.g. Alt-j sends <Esc>j, a.k.a. "8bit-clean" behavior)
-"    -- this is acceptable if you don't mind the 'timeoutlen' after each <Esc>.
-"
-" When using Vim on MacOSX, you can set the `macmeta` option.
-" When using gVim, here's a quick and dirty way to free all <Alt> shortcuts:
-"     set guioptions-=m
-"
-" Vim users should set the "g:MetaSendsEscape" variable to specify the behavior.
-" If unset, assume the terminal is 8-bit clean and gVim sets the 8th bit.
-" }}}
-if has('nvim')
-  let g:MetaSendsEscape = 0
-elseif !exists('g:MetaSendsEscape')
-  let g:MetaSendsEscape = !has('gui_running')
+if !exists('g:suckless_min_width')
+  let g:suckless_min_width = 24         " minimum window width
+endif
+if !exists('g:suckless_inc_width')
+  let g:suckless_inc_width = 12         " width increment
+endif
+if !exists('g:suckless_inc_height')
+  let g:suckless_inc_height = 6         " height increment
 endif
 
-"|    Tabs / views: organize windows in tabs                                {{{
+" Preferences: wrap-around modes for window selection
+if !exists('g:suckless_wrap_around_jk') " 0 = no wrap
+  let g:suckless_wrap_around_jk = 1     " 1 = wrap in current column (wmii-like)
+endif                                   " 2 = wrap in current tab    (dwm-like)
+if !exists('g:suckless_wrap_around_hl') " 0 = no wrap
+  let g:suckless_wrap_around_hl = 1     " 1 = wrap in current tab    (wmii-like)
+endif                                   " 2 = wrap in all tabs
+
+"|    Tabs / Views: organize windows in tabs                                {{{
 "|-----------------------------------------------------------------------------
 
-set tabline=%!SucklessTabLine()
+" SucklessTabLine: terminal tabs
 function! SucklessTabLine() "{{{
   let line = ''
   for i in range(tabpagenr('$'))
@@ -94,8 +75,11 @@ function! SucklessTabLine() "{{{
   "echomsg 's:' . s
   return line
 endfunction "}}}
+if (!exists('g:suckless_tabline') || g:suckless_tabline)
+  set tabline=%!SucklessTabLine()
+endif
 
-set guitablabel=%{SucklessTabLabel()}
+" SucklessTabLabel: GUI tabs
 function! SucklessTabLabel() "{{{
   " see: http://blog.golden-ratio.net/2008/08/19/using-tabs-in-vim/
 
@@ -127,9 +111,12 @@ function! SucklessTabLabel() "{{{
 
   return label
 endfunction "}}}
+if (!exists('g:suckless_guitablabel') || g:suckless_guitablabel)
+  set guitablabel=%!SucklessTabLabel()
+endif
 
 " MoveToTab: move/copy current window to another tab
-function! MoveToTab(viewnr, copy) "{{{
+function! s:MoveToTab(viewnr, copy) "{{{
   " get the current buffer ref
   let bufnr = bufnr("%")
 
@@ -156,10 +143,15 @@ function! MoveToTab(viewnr, copy) "{{{
   " display the current buffer
   exe "b" . bufnr
 endfunction "}}}
-
+function! MoveWindowToTab(viewnr)
+  s:MoveToTab(viewnr, 0)
+endfunction
+function! CopyWindowToTab(viewnr)
+  s:MoveToTab(viewnr, 1)
+endfunction
 "}}}
 
-"|    Window tiles: selection, movement, resizing                           {{{
+"|    Window Tiles: selection, movement, resizing                           {{{
 "|-----------------------------------------------------------------------------
 
 function! GetTilingMode(mode) "{{{
@@ -198,8 +190,8 @@ function! SetTilingMode(mode) "{{{
       let tmpnr = 0
       while tmpnr != winnr()
         " restore min width if this column is collapsed
-        if winwidth(0) < g:SucklessMinWidth
-          exe "set winwidth=" . g:SucklessMinWidth
+        if winwidth(0) < g:suckless_min_width
+          exe "set winwidth=" . g:suckless_min_width
         endif
         " balance window heights in this column if switching to 'Divided' mode
         if a:mode == "D"
@@ -231,7 +223,7 @@ function! WindowCmd(cmd) "{{{
     " vertical wrapping {{{
     if "jk" =~ a:cmd
       " wrap around in current column
-      if g:SucklessWrapAroundJK == 1
+      if g:suckless_wrap_around_jk == 1
         let tmpnr = -1
         while tmpnr != winnr()
           let tmpnr = winnr()
@@ -242,7 +234,7 @@ function! WindowCmd(cmd) "{{{
           endif
         endwhile
       " select next/previous window
-      elseif g:SucklessWrapAroundJK == 2
+      elseif g:suckless_wrap_around_jk == 2
         if a:cmd == "j"
           wincmd w
         elseif a:cmd == "k"
@@ -253,7 +245,7 @@ function! WindowCmd(cmd) "{{{
     " horizontal wrapping {{{
     if "hl" =~ a:cmd
       " wrap around in current window
-      if g:SucklessWrapAroundHL == 1
+      if g:suckless_wrap_around_hl == 1
         let tmpnr = -1
         while tmpnr != winnr()
           let tmpnr = winnr()
@@ -264,7 +256,7 @@ function! WindowCmd(cmd) "{{{
           endif
         endwhile
       " select next/previous tab
-      elseif g:SucklessWrapAroundHL == 2
+      elseif g:suckless_wrap_around_hl == 2
         if a:cmd == "h"
           if tabpagenr() > 1
             tabprev
@@ -297,8 +289,8 @@ function! WindowCmd(cmd) "{{{
   endif
 
   " ensure the window width is greater or equal to the minimum
-  if "hl" =~ a:cmd && winwidth(0) < g:SucklessMinWidth
-    exe "set winwidth=" . g:SucklessMinWidth
+  if "hl" =~ a:cmd && winwidth(0) < g:suckless_min_width
+    exe "set winwidth=" . g:suckless_min_width
   endif
 endfunction "}}}
 
@@ -357,36 +349,36 @@ function! WindowResize(direction) "{{{
     wincmd j
     if winnr() != winnr
       wincmd p
-      exe g:SucklessIncHeight . "wincmd +"
+      exe g:suckless_inc_height . "wincmd +"
     else
-      exe g:SucklessIncHeight . "wincmd -"
+      exe g:suckless_inc_height . "wincmd -"
     endif
 
   elseif a:direction == "k"
     wincmd j
     if winnr() != winnr
       wincmd p
-      exe g:SucklessIncHeight . "wincmd -"
+      exe g:suckless_inc_height . "wincmd -"
     else
-      exe g:SucklessIncHeight . "wincmd +"
+      exe g:suckless_inc_height . "wincmd +"
     endif
 
   elseif a:direction == "h"
     wincmd l
     if winnr() != winnr
       wincmd p
-      exe g:SucklessIncHeight . "wincmd <"
+      exe g:suckless_inc_height . "wincmd <"
     else
-      exe g:SucklessIncHeight . "wincmd >"
+      exe g:suckless_inc_height . "wincmd >"
     endif
 
   elseif a:direction == "l"
     wincmd l
     if winnr() != winnr
       wincmd p
-      exe g:SucklessIncHeight . "wincmd >"
+      exe g:suckless_inc_height . "wincmd >"
     else
-      exe g:SucklessIncHeight . "wincmd <"
+      exe g:suckless_inc_height . "wincmd <"
     endif
 
   endif
@@ -455,164 +447,142 @@ endfunction "}}}
 
 "}}}
 
-"|    keyboard mappings, Tab management                                     {{{
+"|    Keyboard Mappings                                                     {{{
 "|-----------------------------------------------------------------------------
 
-" Alt+[0..9]: select Tab [1..10] {{{
-if g:MetaSendsEscape
-  nnoremap <silent> <Esc>1 :tabn  1<CR>
-  nnoremap <silent> <Esc>2 :tabn  2<CR>
-  nnoremap <silent> <Esc>3 :tabn  3<CR>
-  nnoremap <silent> <Esc>4 :tabn  4<CR>
-  nnoremap <silent> <Esc>5 :tabn  5<CR>
-  nnoremap <silent> <Esc>6 :tabn  6<CR>
-  nnoremap <silent> <Esc>7 :tabn  7<CR>
-  nnoremap <silent> <Esc>8 :tabn  8<CR>
-  nnoremap <silent> <Esc>9 :tabn  9<CR>
-  nnoremap <silent> <Esc>0 :tabn 10<CR>
-else
-  nnoremap <silent>  <M-1> :tabn  1<CR>
-  nnoremap <silent>  <M-2> :tabn  2<CR>
-  nnoremap <silent>  <M-3> :tabn  3<CR>
-  nnoremap <silent>  <M-4> :tabn  4<CR>
-  nnoremap <silent>  <M-5> :tabn  5<CR>
-  nnoremap <silent>  <M-6> :tabn  6<CR>
-  nnoremap <silent>  <M-7> :tabn  7<CR>
-  nnoremap <silent>  <M-8> :tabn  8<CR>
-  nnoremap <silent>  <M-9> :tabn  9<CR>
-  nnoremap <silent>  <M-0> :tabn 10<CR>
+" Notes about the Alt key... {{{
+" Neovim users, you can ignore this paragraph. Enjoy!
+" Vim users, I'm afraid that <Alt>-shortcuts are tricky with Vim:
+"
+"  * with gVim and MacVim, the Alt key sets the 8th bit
+"    (e.g. Alt-j sends an "ê", and an "ê" is detected as Alt-j by Vim)
+"    -- this is acceptable if you don't use any accented character;
+"
+"  * with most modern terminal emulators, the Alt key sends an <Esc>
+"    (e.g. Alt-j sends <Esc>j, a.k.a. "8bit-clean" behavior)
+"    -- this is acceptable if you don't mind the 'timeoutlen' after each <Esc>.
+"
+" When using Vim on MacOSX, you can set the `macmeta` option.
+" When using gVim, here's a quick and dirty way to free all <Alt> shortcuts:
+"     set guioptions-=m
+"
+" Vim users should set the "g:MetaSendsEscape" variable to specify the behavior.
+" If unset, assume the terminal is 8-bit clean and gVim sets the 8th bit.
+if has('nvim')
+  let g:MetaSendsEscape = 0
+elseif !exists('g:MetaSendsEscape')
+  let g:MetaSendsEscape = !has('gui_running')
 endif
-"}}}
 
-" <Leader>[1..0]: select Tab [1..10] {{{
-nnoremap <silent> <Leader>1 :tabn  1<CR>
-nnoremap <silent> <Leader>2 :tabn  2<CR>
-nnoremap <silent> <Leader>3 :tabn  3<CR>
-nnoremap <silent> <Leader>4 :tabn  4<CR>
-nnoremap <silent> <Leader>5 :tabn  5<CR>
-nnoremap <silent> <Leader>6 :tabn  6<CR>
-nnoremap <silent> <Leader>7 :tabn  7<CR>
-nnoremap <silent> <Leader>8 :tabn  8<CR>
-nnoremap <silent> <Leader>9 :tabn  9<CR>
-nnoremap <silent> <Leader>0 :tabn 10<CR>
-"}}}
+function! s:map(shortcut, action)
+  let l:shortcut = a:shortcut
+  if g:MetaSendsEscape && a:shortcut =~ 'M-'
+    let l:shortcut = '<Esc>' . substitute(l:shortcut, 'M-', '><', '')
+    let l:shortcut = substitute(l:shortcut, '<>', '', '')
+    if l:shortcut =~ '<.>$'
+      let l = len(l:shortcut)
+      let l:shortcut = l:shortcut[0:l-4] . l:shortcut[l-2]
+    endif
+  endif
+  exe 'nnoremap <silent> ' . l:shortcut . ' ' . a:action
+endfunction
+" }}}
 
-" <Leader>t[1..0]: move current window to Tab [1..10] {{{
-nnoremap <silent> <Leader>t1 :call MoveToTab( 1,0)<CR>
-nnoremap <silent> <Leader>t2 :call MoveToTab( 2,0)<CR>
-nnoremap <silent> <Leader>t3 :call MoveToTab( 3,0)<CR>
-nnoremap <silent> <Leader>t4 :call MoveToTab( 4,0)<CR>
-nnoremap <silent> <Leader>t5 :call MoveToTab( 5,0)<CR>
-nnoremap <silent> <Leader>t6 :call MoveToTab( 6,0)<CR>
-nnoremap <silent> <Leader>t7 :call MoveToTab( 7,0)<CR>
-nnoremap <silent> <Leader>t8 :call MoveToTab( 8,0)<CR>
-nnoremap <silent> <Leader>t9 :call MoveToTab( 9,0)<CR>
-nnoremap <silent> <Leader>t0 :call MoveToTab(10,0)<CR>
-"}}}
+if (!exists('g:suckless_map_tabs') || g:suckless_map_tabs)
+  " Tab Management {{{
 
-" <Leader>T[1..0]: copy current window to Tab [1..10] {{{
-nnoremap <silent> <Leader>T1 :call MoveToTab( 1,1)<CR>
-nnoremap <silent> <Leader>T2 :call MoveToTab( 2,1)<CR>
-nnoremap <silent> <Leader>T3 :call MoveToTab( 3,1)<CR>
-nnoremap <silent> <Leader>T4 :call MoveToTab( 4,1)<CR>
-nnoremap <silent> <Leader>T5 :call MoveToTab( 5,1)<CR>
-nnoremap <silent> <Leader>T6 :call MoveToTab( 6,1)<CR>
-nnoremap <silent> <Leader>T7 :call MoveToTab( 7,1)<CR>
-nnoremap <silent> <Leader>T8 :call MoveToTab( 8,1)<CR>
-nnoremap <silent> <Leader>T9 :call MoveToTab( 9,1)<CR>
-nnoremap <silent> <Leader>T0 :call MoveToTab(10,1)<CR>
-"}}}
+  " Alt+[0..9]: select Tab [1..10]
+  call s:map('<M-1>', ':tabn  1<CR>')
+  call s:map('<M-2>', ':tabn  2<CR>')
+  call s:map('<M-3>', ':tabn  3<CR>')
+  call s:map('<M-4>', ':tabn  4<CR>')
+  call s:map('<M-5>', ':tabn  5<CR>')
+  call s:map('<M-6>', ':tabn  6<CR>')
+  call s:map('<M-7>', ':tabn  7<CR>')
+  call s:map('<M-8>', ':tabn  8<CR>')
+  call s:map('<M-9>', ':tabn  9<CR>')
+  call s:map('<M-0>', ':tabn 10<CR>')
 
-"}}}
+  " <Leader>[1..0]: select Tab [1..10]
+  call s:map('<Leader>1', ':tabn  1<CR>')
+  call s:map('<Leader>2', ':tabn  2<CR>')
+  call s:map('<Leader>3', ':tabn  3<CR>')
+  call s:map('<Leader>4', ':tabn  4<CR>')
+  call s:map('<Leader>5', ':tabn  5<CR>')
+  call s:map('<Leader>6', ':tabn  6<CR>')
+  call s:map('<Leader>7', ':tabn  7<CR>')
+  call s:map('<Leader>8', ':tabn  8<CR>')
+  call s:map('<Leader>9', ':tabn  9<CR>')
+  call s:map('<Leader>0', ':tabn 10<CR>')
 
-"|    keyboard mappings, Window management                                  {{{
-"|-----------------------------------------------------------------------------
+  " <Leader>t[1..0]: move current window to Tab [1..10]
+  call s:map('<Leader>t1', ':call MoveWindowToTab( 1)<CR>')
+  call s:map('<Leader>t2', ':call MoveWindowToTab( 2)<CR>')
+  call s:map('<Leader>t3', ':call MoveWindowToTab( 3)<CR>')
+  call s:map('<Leader>t4', ':call MoveWindowToTab( 4)<CR>')
+  call s:map('<Leader>t5', ':call MoveWindowToTab( 5)<CR>')
+  call s:map('<Leader>t6', ':call MoveWindowToTab( 6)<CR>')
+  call s:map('<Leader>t7', ':call MoveWindowToTab( 7)<CR>')
+  call s:map('<Leader>t8', ':call MoveWindowToTab( 8)<CR>')
+  call s:map('<Leader>t9', ':call MoveWindowToTab( 9)<CR>')
+  call s:map('<Leader>t0', ':call MoveWindowToTab(10)<CR>')
 
-" Alt+[sdf]: Window mode selection {{{
-if g:MetaSendsEscape
-  nnoremap <silent> <Esc>s :call SetTilingMode("S")<CR>
-  nnoremap <silent> <Esc>d :call SetTilingMode("D")<CR>
-  nnoremap <silent> <Esc>f :call SetTilingMode("F")<CR>
-else
-  nnoremap <silent>  <M-s> :call SetTilingMode("S")<CR>
-  nnoremap <silent>  <M-d> :call SetTilingMode("D")<CR>
-  nnoremap <silent>  <M-f> :call SetTilingMode("F")<CR>
+  " <Leader>T[1..0]: copy current window to Tab [1..10]
+  call s:map('<Leader>T1', ':call CopyWindowToTab( 1,1)<CR>')
+  call s:map('<Leader>T2', ':call CopyWindowToTab( 2,1)<CR>')
+  call s:map('<Leader>T3', ':call CopyWindowToTab( 3,1)<CR>')
+  call s:map('<Leader>T4', ':call CopyWindowToTab( 4,1)<CR>')
+  call s:map('<Leader>T5', ':call CopyWindowToTab( 5,1)<CR>')
+  call s:map('<Leader>T6', ':call CopyWindowToTab( 6,1)<CR>')
+  call s:map('<Leader>T7', ':call CopyWindowToTab( 7,1)<CR>')
+  call s:map('<Leader>T8', ':call CopyWindowToTab( 8,1)<CR>')
+  call s:map('<Leader>T9', ':call CopyWindowToTab( 9,1)<CR>')
+  call s:map('<Leader>T0', ':call CopyWindowToTab(10,1)<CR>')
+
+  "}}}
 endif
-"}}}
 
-" Alt+[hjkl]: select window {{{
-if g:MetaSendsEscape
-  nnoremap <silent> <Esc>h :call WindowCmd("h")<CR>
-  nnoremap <silent> <Esc>j :call WindowCmd("j")<CR>
-  nnoremap <silent> <Esc>k :call WindowCmd("k")<CR>
-  nnoremap <silent> <Esc>l :call WindowCmd("l")<CR>
-else
-  nnoremap <silent>  <M-h> :call WindowCmd("h")<CR>
-  nnoremap <silent>  <M-j> :call WindowCmd("j")<CR>
-  nnoremap <silent>  <M-k> :call WindowCmd("k")<CR>
-  nnoremap <silent>  <M-l> :call WindowCmd("l")<CR>
+if (!exists('g:suckless_map_windows') || g:suckless_map_windows)
+  " Window Management {{{
+
+  " Alt+[SDF]: Window mode selection
+  call s:map('<M-s>', ':call SetTilingMode("S")<CR>')
+  call s:map('<M-d>', ':call SetTilingMode("D")<CR>')
+  call s:map('<M-f>', ':call SetTilingMode("F")<CR>')
+
+  " Alt+[hjkl]: select window
+  call s:map('<M-h>', ':call WindowCmd("h")<CR>')
+  call s:map('<M-j>', ':call WindowCmd("j")<CR>')
+  call s:map('<M-k>', ':call WindowCmd("k")<CR>')
+  call s:map('<M-l>', ':call WindowCmd("l")<CR>')
+
+  " Alt+[HJKL]: move current window
+  call s:map('<M-H>', ':call WindowMove("h")<CR>')
+  call s:map('<M-J>', ':call WindowMove("j")<CR>')
+  call s:map('<M-K>', ':call WindowMove("k")<CR>')
+  call s:map('<M-L>', ':call WindowMove("l")<CR>')
+
+  " Ctrl+Alt+[hjkl]: resize current window
+  call s:map('<C-M-h>', ':call WindowResize("h")<CR>')
+  call s:map('<C-M-j>', ':call WindowResize("j")<CR>')
+  call s:map('<C-M-k>', ':call WindowResize("k")<CR>')
+  call s:map('<C-M-l>', ':call WindowResize("l")<CR>')
+
+  " Alt+[oO]: new horizontal/vertical window
+  call s:map('<M-o>', ':call WindowCreate("s")<CR>')
+  call s:map('<M-O>', ':call WindowCreate("v")<CR>')
+
+  " Alt+[cw]: collapse/close current window
+  call s:map('<M-c>', ':call WindowCollapse()<CR>')
+  call s:map('<M-w>', ':call WindowClose()<CR>')
+
+  "}}}
 endif
-"}}}
 
-" Alt+[HJKL]: move current window {{{
-if g:MetaSendsEscape
-  nnoremap <silent>  <Esc>H :call WindowMove("h")<CR>
-  nnoremap <silent>  <Esc>J :call WindowMove("j")<CR>
-  nnoremap <silent>  <Esc>K :call WindowMove("k")<CR>
-  nnoremap <silent>  <Esc>L :call WindowMove("l")<CR>
-else
-  nnoremap <silent> <S-M-h> :call WindowMove("h")<CR>
-  nnoremap <silent> <S-M-j> :call WindowMove("j")<CR>
-  nnoremap <silent> <S-M-k> :call WindowMove("k")<CR>
-  nnoremap <silent> <S-M-l> :call WindowMove("l")<CR>
-endif
-"}}}
-
-" Ctrl+Alt+[hjkl]: resize current window {{{
-if g:MetaSendsEscape
-  nnoremap <silent> <Esc><C-h> :call WindowResize("h")<CR>
-  nnoremap <silent> <Esc><C-j> :call WindowResize("j")<CR>
-  nnoremap <silent> <Esc><C-k> :call WindowResize("k")<CR>
-  nnoremap <silent> <Esc><C-l> :call WindowResize("l")<CR>
-else
-  nnoremap <silent>    <C-M-h> :call WindowResize("h")<CR>
-  nnoremap <silent>    <C-M-j> :call WindowResize("j")<CR>
-  nnoremap <silent>    <C-M-k> :call WindowResize("k")<CR>
-  nnoremap <silent>    <C-M-l> :call WindowResize("l")<CR>
-endif
-"}}}
-
-"}}}
-
-"|    Alt+[ocw]: create/collapse/close window                               {{{
-"|-----------------------------------------------------------------------------
-
-" Alt+[oO]: new horizontal/vertical window {{{
-if g:MetaSendsEscape
-  nnoremap <silent>  <Esc>o :call WindowCreate("s")<CR>
-  nnoremap <silent>  <Esc>O :call WindowCreate("v")<CR>
-else
-  nnoremap <silent>   <M-o> :call WindowCreate("s")<CR>
-  nnoremap <silent> <S-M-o> :call WindowCreate("v")<CR>
-endif
-"}}}
-
-" Alt+c: collapse current window {{{
-if g:MetaSendsEscape
-  nnoremap <silent> <Esc>c :call WindowCollapse()<CR>
-else
-  nnoremap <silent>  <M-c> :call WindowCollapse()<CR>
-endif
-"}}}
-
-" Alt+w: close current window {{{
-if g:MetaSendsEscape
-  nnoremap <silent> <Esc>w :call WindowClose()<CR>
-else
-  nnoremap <silent>  <M-w> :call WindowClose()<CR>
-endif
-"}}}
-
+" Public API for user-defined mappings
+function! suckless#nnoremap(shortcut, action)
+  call s:map(a:shortcut, a:action)
+endfunction
 "}}}
 
 "|    TODO (not working yet)                                                {{{
