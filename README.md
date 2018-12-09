@@ -64,16 +64,16 @@ let g:suckless_map_windows = 0 " disables the default mappings below:
 "        Alt+w      ⇒ WindowClose()
 
 let g:suckless_map_tabs = 0 " disables the default mappings below:
-"        Alt+[1234567890] ⇒ tabnext n
-"    <Leader>[1234567890] ⇒ tabnext n
-"   <Leader>t[1234567890] ⇒ MoveWindowToTab(n)
-"   <Leader>T[1234567890] ⇒ CopyWindowToTab(n)
+"        Alt+[123456789] ⇒ TabSelect(n)
+"    <Leader>[123456789] ⇒ TabSelect(n)
+"   <Leader>t[123456789] ⇒ MoveWindowToTab(n)
+"   <Leader>T[123456789] ⇒ CopyWindowToTab(n)
 ```
 
 You can also use the plugin’s `nnoremap` function to handle <kbd>Alt</kbd> shortcuts easily:
 
 ```vim
-call suckless#nnoremap('<M-n>', ':call WindowCreate("s")<CR>')
+call suckless#nnoremap('<M-n>', 'WindowCreate("s")')
 ```
 
 Which is equivalent to:

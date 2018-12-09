@@ -114,6 +114,15 @@ endfunction "}}}
 if (!exists('g:suckless_guitablabel') || g:suckless_guitablabel)
   set guitablabel=%!SucklessTabLabel()
 endif
+ 
+" TabSelect:
+function! TabSelect(viewnr) "{{{
+  if a:viewnr >= 9 || a:viewnr > tabpagenr('$')
+    tablast
+  else
+    exe 'tabnext ' . a:viewnr
+  endif
+endfunction "}}}
 
 " MoveToTab: move/copy current window to another tab
 function! s:MoveToTab(viewnr, copy) "{{{
@@ -126,13 +135,14 @@ function! s:MoveToTab(viewnr, copy) "{{{
   endif
 
   " get a window in the requested Tab
-  if a:viewnr > tabpagenr('$')
+  let viewnr = a:viewnr < 9 ? a:viewnr : tabpagenr('$')
+  if viewnr > tabpagenr('$')
     " the requested Tab doesn't exist, create it
     tablast
     tabnew
   else
     " select the requested Tab an add a window with the current buffer
-    exe "tabn " . a:viewnr
+    exe "tabnext " . viewnr
     wincmd l
     " TODO: if the buffer is already displayed in this Tab, select its window
     " TODO: if this tab is in 'stacked' or 'fullscreen' mode, expand window
@@ -484,60 +494,56 @@ function! s:map(shortcut, action)
       let l:shortcut = l:shortcut[0:l-4] . l:shortcut[l-2]
     endif
   endif
-  exe 'nnoremap <silent> ' . l:shortcut . ' ' . a:action
+  exe 'nnoremap <silent> ' . l:shortcut . ' :call ' . a:action . '<CR>'
 endfunction
 " }}}
 
 if (!exists('g:suckless_map_tabs') || g:suckless_map_tabs)
   " Tab Management {{{
 
-  " Alt+[0..9]: select Tab [1..10]
-  call s:map('<M-1>', ':tabn  1<CR>')
-  call s:map('<M-2>', ':tabn  2<CR>')
-  call s:map('<M-3>', ':tabn  3<CR>')
-  call s:map('<M-4>', ':tabn  4<CR>')
-  call s:map('<M-5>', ':tabn  5<CR>')
-  call s:map('<M-6>', ':tabn  6<CR>')
-  call s:map('<M-7>', ':tabn  7<CR>')
-  call s:map('<M-8>', ':tabn  8<CR>')
-  call s:map('<M-9>', ':tabn  9<CR>')
-  call s:map('<M-0>', ':tabn 10<CR>')
+  " Alt+[1..9]: select Tab [1..9]
+  call s:map('<M-1>', 'TabSelect(1)')
+  call s:map('<M-2>', 'TabSelect(2)')
+  call s:map('<M-3>', 'TabSelect(3)')
+  call s:map('<M-4>', 'TabSelect(4)')
+  call s:map('<M-5>', 'TabSelect(5)')
+  call s:map('<M-6>', 'TabSelect(6)')
+  call s:map('<M-7>', 'TabSelect(7)')
+  call s:map('<M-8>', 'TabSelect(8)')
+  call s:map('<M-9>', 'TabSelect(9)')
 
-  " <Leader>[1..0]: select Tab [1..10]
-  call s:map('<Leader>1', ':tabn  1<CR>')
-  call s:map('<Leader>2', ':tabn  2<CR>')
-  call s:map('<Leader>3', ':tabn  3<CR>')
-  call s:map('<Leader>4', ':tabn  4<CR>')
-  call s:map('<Leader>5', ':tabn  5<CR>')
-  call s:map('<Leader>6', ':tabn  6<CR>')
-  call s:map('<Leader>7', ':tabn  7<CR>')
-  call s:map('<Leader>8', ':tabn  8<CR>')
-  call s:map('<Leader>9', ':tabn  9<CR>')
-  call s:map('<Leader>0', ':tabn 10<CR>')
+  " <Leader>[1..9]: select Tab [1..9]
+  call s:map('<Leader>1', 'TabSelect(1)')
+  call s:map('<Leader>2', 'TabSelect(2)')
+  call s:map('<Leader>3', 'TabSelect(3)')
+  call s:map('<Leader>4', 'TabSelect(4)')
+  call s:map('<Leader>5', 'TabSelect(5)')
+  call s:map('<Leader>6', 'TabSelect(6)')
+  call s:map('<Leader>7', 'TabSelect(7)')
+  call s:map('<Leader>8', 'TabSelect(8)')
+  call s:map('<Leader>9', 'TabSelect(9)')
 
-  " <Leader>t[1..0]: move current window to Tab [1..10]
-  call s:map('<Leader>t1', ':call MoveWindowToTab( 1)<CR>')
-  call s:map('<Leader>t2', ':call MoveWindowToTab( 2)<CR>')
-  call s:map('<Leader>t3', ':call MoveWindowToTab( 3)<CR>')
-  call s:map('<Leader>t4', ':call MoveWindowToTab( 4)<CR>')
-  call s:map('<Leader>t5', ':call MoveWindowToTab( 5)<CR>')
-  call s:map('<Leader>t6', ':call MoveWindowToTab( 6)<CR>')
-  call s:map('<Leader>t7', ':call MoveWindowToTab( 7)<CR>')
-  call s:map('<Leader>t8', ':call MoveWindowToTab( 8)<CR>')
-  call s:map('<Leader>t9', ':call MoveWindowToTab( 9)<CR>')
-  call s:map('<Leader>t0', ':call MoveWindowToTab(10)<CR>')
+  " <Leader>t[1..9]: move current window to Tab [1..9]
+  call s:map('<Leader>t1', 'MoveWindowToTab(1)')
+  call s:map('<Leader>t2', 'MoveWindowToTab(2)')
+  call s:map('<Leader>t3', 'MoveWindowToTab(3)')
+  call s:map('<Leader>t4', 'MoveWindowToTab(4)')
+  call s:map('<Leader>t5', 'MoveWindowToTab(5)')
+  call s:map('<Leader>t6', 'MoveWindowToTab(6)')
+  call s:map('<Leader>t7', 'MoveWindowToTab(7)')
+  call s:map('<Leader>t8', 'MoveWindowToTab(8)')
+  call s:map('<Leader>t9', 'MoveWindowToTab(9)')
 
-  " <Leader>T[1..0]: copy current window to Tab [1..10]
-  call s:map('<Leader>T1', ':call CopyWindowToTab( 1)<CR>')
-  call s:map('<Leader>T2', ':call CopyWindowToTab( 2)<CR>')
-  call s:map('<Leader>T3', ':call CopyWindowToTab( 3)<CR>')
-  call s:map('<Leader>T4', ':call CopyWindowToTab( 4)<CR>')
-  call s:map('<Leader>T5', ':call CopyWindowToTab( 5)<CR>')
-  call s:map('<Leader>T6', ':call CopyWindowToTab( 6)<CR>')
-  call s:map('<Leader>T7', ':call CopyWindowToTab( 7)<CR>')
-  call s:map('<Leader>T8', ':call CopyWindowToTab( 8)<CR>')
-  call s:map('<Leader>T9', ':call CopyWindowToTab( 9)<CR>')
-  call s:map('<Leader>T0', ':call CopyWindowToTab(10)<CR>')
+  " <Leader>T[1..9]: copy current window to Tab [1..9]
+  call s:map('<Leader>T1', 'CopyWindowToTab(1)')
+  call s:map('<Leader>T2', 'CopyWindowToTab(2)')
+  call s:map('<Leader>T3', 'CopyWindowToTab(3)')
+  call s:map('<Leader>T4', 'CopyWindowToTab(4)')
+  call s:map('<Leader>T5', 'CopyWindowToTab(5)')
+  call s:map('<Leader>T6', 'CopyWindowToTab(6)')
+  call s:map('<Leader>T7', 'CopyWindowToTab(7)')
+  call s:map('<Leader>T8', 'CopyWindowToTab(8)')
+  call s:map('<Leader>T9', 'CopyWindowToTab(9)')
 
   "}}}
 endif
@@ -546,35 +552,35 @@ if (!exists('g:suckless_map_windows') || g:suckless_map_windows)
   " Window Management {{{
 
   " Alt+[SDF]: Window mode selection
-  call s:map('<M-s>', ':call SetTilingMode("S")<CR>')
-  call s:map('<M-d>', ':call SetTilingMode("D")<CR>')
-  call s:map('<M-f>', ':call SetTilingMode("F")<CR>')
+  call s:map('<M-s>', 'SetTilingMode("S")')
+  call s:map('<M-d>', 'SetTilingMode("D")')
+  call s:map('<M-f>', 'SetTilingMode("F")')
 
   " Alt+[hjkl]: select window
-  call s:map('<M-h>', ':call WindowCmd("h")<CR>')
-  call s:map('<M-j>', ':call WindowCmd("j")<CR>')
-  call s:map('<M-k>', ':call WindowCmd("k")<CR>')
-  call s:map('<M-l>', ':call WindowCmd("l")<CR>')
+  call s:map('<M-h>', 'WindowCmd("h")')
+  call s:map('<M-j>', 'WindowCmd("j")')
+  call s:map('<M-k>', 'WindowCmd("k")')
+  call s:map('<M-l>', 'WindowCmd("l")')
 
   " Alt+[HJKL]: move current window
-  call s:map('<M-H>', ':call WindowMove("h")<CR>')
-  call s:map('<M-J>', ':call WindowMove("j")<CR>')
-  call s:map('<M-K>', ':call WindowMove("k")<CR>')
-  call s:map('<M-L>', ':call WindowMove("l")<CR>')
+  call s:map('<M-H>', 'WindowMove("h")')
+  call s:map('<M-J>', 'WindowMove("j")')
+  call s:map('<M-K>', 'WindowMove("k")')
+  call s:map('<M-L>', 'WindowMove("l")')
 
   " Ctrl+Alt+[hjkl]: resize current window
-  call s:map('<M-C-h>', ':call WindowResize("h")<CR>')
-  call s:map('<M-C-j>', ':call WindowResize("j")<CR>')
-  call s:map('<M-C-k>', ':call WindowResize("k")<CR>')
-  call s:map('<M-C-l>', ':call WindowResize("l")<CR>')
+  call s:map('<M-C-h>', 'WindowResize("h")')
+  call s:map('<M-C-j>', 'WindowResize("j")')
+  call s:map('<M-C-k>', 'WindowResize("k")')
+  call s:map('<M-C-l>', 'WindowResize("l")')
 
   " Alt+[oO]: new horizontal/vertical window
-  call s:map('<M-o>', ':call WindowCreate("s")<CR>')
-  call s:map('<M-O>', ':call WindowCreate("v")<CR>')
+  call s:map('<M-o>', 'WindowCreate("s")')
+  call s:map('<M-O>', 'WindowCreate("v")')
 
   " Alt+[cw]: collapse/close current window
-  call s:map('<M-c>', ':call WindowCollapse()<CR>')
-  call s:map('<M-w>', ':call WindowClose()<CR>')
+  call s:map('<M-c>', 'WindowCollapse()')
+  call s:map('<M-w>', 'WindowClose()')
 
   "}}}
 endif
