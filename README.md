@@ -55,9 +55,9 @@ The default keyboard mappings for tab and window management can be disabled by s
 
 ```vim
 let g:suckless_map_windows = 0 " disables the default mappings below:
-"        Alt+[sdf]  ⇒ SetTilingMode("SDF")  # [S]tacked, [D]ivided, [F]ullscreen
-"        Alt+[hjkl] ⇒ WindowCmd("hjkl")
-"        Alt+[HJKL] ⇒ WindowMove("hjkl")
+"        Alt+[sdf]  ⇒ SetTilingMode("sdf")  # [s]tacked, [d]ivided, [f]ullscreen
+"        Alt+[hjkl] ⇒ WindowSelect("hjkl")
+"  Shift+Alt+[hjkl] ⇒ WindowMove("hjkl")
 "   Ctrl+Alt+[hjkl] ⇒ WindowResize("hjkl")
 "        Alt+[oO]   ⇒ WindowCreate("sv")    # horizontal [s]plit, [v]ertical split
 "        Alt+c      ⇒ WindowCollapse()
