@@ -10,21 +10,21 @@ Instructions
 
 For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by default:
 
-         Alt+[sdf]  ⇒ tiling mode selection: [s]tacked, [d]ivided, [f]ullscreen
-         Alt+[hjkl] ⇒ select adjacent window
-         Alt+[HJKL] ⇒ move current window
-    Ctrl+Alt+[hjkl] ⇒ resize current window
+          Alt+[sdf]  ⇒ tiling mode selection: [s]tacked, [d]ivided, [f]ullscreen
+          Alt+[hjkl] ⇒ select adjacent window
+    Shift+Alt+[hjkl] ⇒ move current window
+     Ctrl+Alt+[hjkl] ⇒ resize current window
 
-              Alt+o ⇒ create new window
-              Alt+c ⇒ collapse window
-              Alt+w ⇒ close window
+               Alt+o ⇒ create new window
+               Alt+c ⇒ collapse window
+               Alt+w ⇒ close window
 
 Vim tabs are used as “views”:
 
-         Alt+[1234567890] ⇒ select tab [1..10]
-     <Leader>[1234567890] ⇒ select tab [1..10]
-    <Leader>t[1234567890] ⇒ move current window to tab [1..10]
-    <Leader>T[1234567890] ⇒ copy current window to tab [1..10]
+         Alt+[123456789] ⇒ select tab [1..9]
+     <Leader>[123456789] ⇒ select tab [1..9]
+    <Leader>t[123456789] ⇒ move current window to tab [1..9]
+    <Leader>T[123456789] ⇒ copy current window to tab [1..9]
 
 
 Meta/Alt caveats
@@ -64,16 +64,16 @@ let g:suckless_map_windows = 0 " disables the default mappings below:
 "        Alt+w      ⇒ WindowClose()
 
 let g:suckless_map_tabs = 0 " disables the default mappings below:
-"        Alt+[1234567890] ⇒ tabnext n
-"    <Leader>[1234567890] ⇒ tabnext n
-"   <Leader>t[1234567890] ⇒ MoveWindowToTab(n)
-"   <Leader>T[1234567890] ⇒ CopyWindowToTab(n)
+"        Alt+[123456789] ⇒ TabSelect(n)
+"    <Leader>[123456789] ⇒ TabSelect(n)
+"   <Leader>t[123456789] ⇒ MoveWindowToTab(n)
+"   <Leader>T[123456789] ⇒ CopyWindowToTab(n)
 ```
 
 You can also use the plugin’s `nnoremap` function to handle <kbd>Alt</kbd> shortcuts easily:
 
 ```vim
-call suckless#nnoremap('<M-n>', ':call WindowCreate("s")<CR>')
+call suckless#nnoremap('<M-n>', 'WindowCreate("s")')
 ```
 
 Which is equivalent to:
