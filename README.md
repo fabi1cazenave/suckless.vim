@@ -64,7 +64,6 @@ let g:suckless_map_windows = 0 " disables the default mappings below:
 "        Alt+w      ⇒ WindowClose()
 
 let g:suckless_map_tabs = 0 " disables the default mappings below:
-"        Alt+[123456789] ⇒ TabSelect(n)
 "    <Leader>[123456789] ⇒ TabSelect(n)
 "   <Leader>t[123456789] ⇒ MoveWindowToTab(n)
 "   <Leader>T[123456789] ⇒ CopyWindowToTab(n)
