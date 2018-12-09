@@ -563,10 +563,10 @@ if (!exists('g:suckless_map_windows') || g:suckless_map_windows)
   call s:map('<M-L>', ':call WindowMove("l")<CR>')
 
   " Ctrl+Alt+[hjkl]: resize current window
-  call s:map('<C-M-h>', ':call WindowResize("h")<CR>')
-  call s:map('<C-M-j>', ':call WindowResize("j")<CR>')
-  call s:map('<C-M-k>', ':call WindowResize("k")<CR>')
-  call s:map('<C-M-l>', ':call WindowResize("l")<CR>')
+  call s:map('<M-C-h>', ':call WindowResize("h")<CR>')
+  call s:map('<M-C-j>', ':call WindowResize("j")<CR>')
+  call s:map('<M-C-k>', ':call WindowResize("k")<CR>')
+  call s:map('<M-C-l>', ':call WindowResize("l")<CR>')
 
   " Alt+[oO]: new horizontal/vertical window
   call s:map('<M-o>', ':call WindowCreate("s")<CR>')
