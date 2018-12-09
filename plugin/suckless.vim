@@ -221,7 +221,7 @@ function! SetTilingMode(mode) "{{{
   let t:windowMode = a:mode
 endfunction "}}}
 
-function! WindowCmd(cmd) "{{{
+function! WindowSelect(cmd) "{{{
   let w:maximized = 0
 
   " issue the corresponding 'wincmd'
@@ -551,18 +551,18 @@ endif
 if (!exists('g:suckless_map_windows') || g:suckless_map_windows)
   " Window Management {{{
 
-  " Alt+[SDF]: Window mode selection
-  call s:map('<M-s>', 'SetTilingMode("S")')
-  call s:map('<M-d>', 'SetTilingMode("D")')
-  call s:map('<M-f>', 'SetTilingMode("F")')
+  " Alt+[sdf]: Window mode selection
+  call s:map('<M-s>', 'SetTilingMode("s")')
+  call s:map('<M-d>', 'SetTilingMode("d")')
+  call s:map('<M-f>', 'SetTilingMode("f")')
 
   " Alt+[hjkl]: select window
-  call s:map('<M-h>', 'WindowCmd("h")')
-  call s:map('<M-j>', 'WindowCmd("j")')
-  call s:map('<M-k>', 'WindowCmd("k")')
-  call s:map('<M-l>', 'WindowCmd("l")')
+  call s:map('<M-h>', 'WindowSelect("h")')
+  call s:map('<M-j>', 'WindowSelect("j")')
+  call s:map('<M-k>', 'WindowSelect("k")')
+  call s:map('<M-l>', 'WindowSelect("l")')
 
-  " Alt+[HJKL]: move current window
+  " Shift+Alt+[hjkl]: move current window
   call s:map('<M-H>', 'WindowMove("h")')
   call s:map('<M-J>', 'WindowMove("j")')
   call s:map('<M-K>', 'WindowMove("k")')
