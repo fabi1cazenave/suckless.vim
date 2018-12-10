@@ -460,6 +460,7 @@ endfunction "}}}
 "|    Keyboard Mappings                                                     {{{
 "|-----------------------------------------------------------------------------
 
+" MetaSendsEscape:
 " Notes about the Alt key... {{{
 " Neovim users, you can ignore this paragraph. Enjoy!
 " Vim users, I'm afraid that <Alt>-shortcuts are tricky with Vim:
@@ -483,8 +484,10 @@ if has('nvim')
 elseif !exists('g:MetaSendsEscape')
   let g:MetaSendsEscape = !has('gui_running')
 endif
+" }}}
 
-function! s:map(shortcut, action)
+" mapping helpers {{{
+function! s:escape_meta(shortcut)
   let l:shortcut = a:shortcut
   if g:MetaSendsEscape && a:shortcut =~ 'M-'
     let l:shortcut = '<Esc>' . substitute(l:shortcut, 'M-', '><', '')
@@ -494,101 +497,80 @@ function! s:map(shortcut, action)
       let l:shortcut = l:shortcut[0:l-4] . l:shortcut[l-2]
     endif
   endif
-  exe 'nnoremap <silent> ' . l:shortcut . ' :call ' . a:action . '<CR>'
+  return l:shortcut
 endfunction
-" }}}
 
-if (!exists('g:suckless_map_tabs') || g:suckless_map_tabs)
-  " Tab Management {{{
-
-  " Alt+[1..9]: select Tab [1..9]
-  call s:map('<M-1>', 'TabSelect(1)')
-  call s:map('<M-2>', 'TabSelect(2)')
-  call s:map('<M-3>', 'TabSelect(3)')
-  call s:map('<M-4>', 'TabSelect(4)')
-  call s:map('<M-5>', 'TabSelect(5)')
-  call s:map('<M-6>', 'TabSelect(6)')
-  call s:map('<M-7>', 'TabSelect(7)')
-  call s:map('<M-8>', 'TabSelect(8)')
-  call s:map('<M-9>', 'TabSelect(9)')
-
-  " <Leader>[1..9]: select Tab [1..9]
-  call s:map('<Leader>1', 'TabSelect(1)')
-  call s:map('<Leader>2', 'TabSelect(2)')
-  call s:map('<Leader>3', 'TabSelect(3)')
-  call s:map('<Leader>4', 'TabSelect(4)')
-  call s:map('<Leader>5', 'TabSelect(5)')
-  call s:map('<Leader>6', 'TabSelect(6)')
-  call s:map('<Leader>7', 'TabSelect(7)')
-  call s:map('<Leader>8', 'TabSelect(8)')
-  call s:map('<Leader>9', 'TabSelect(9)')
-
-  " <Leader>t[1..9]: move current window to Tab [1..9]
-  call s:map('<Leader>t1', 'MoveWindowToTab(1)')
-  call s:map('<Leader>t2', 'MoveWindowToTab(2)')
-  call s:map('<Leader>t3', 'MoveWindowToTab(3)')
-  call s:map('<Leader>t4', 'MoveWindowToTab(4)')
-  call s:map('<Leader>t5', 'MoveWindowToTab(5)')
-  call s:map('<Leader>t6', 'MoveWindowToTab(6)')
-  call s:map('<Leader>t7', 'MoveWindowToTab(7)')
-  call s:map('<Leader>t8', 'MoveWindowToTab(8)')
-  call s:map('<Leader>t9', 'MoveWindowToTab(9)')
-
-  " <Leader>T[1..9]: copy current window to Tab [1..9]
-  call s:map('<Leader>T1', 'CopyWindowToTab(1)')
-  call s:map('<Leader>T2', 'CopyWindowToTab(2)')
-  call s:map('<Leader>T3', 'CopyWindowToTab(3)')
-  call s:map('<Leader>T4', 'CopyWindowToTab(4)')
-  call s:map('<Leader>T5', 'CopyWindowToTab(5)')
-  call s:map('<Leader>T6', 'CopyWindowToTab(6)')
-  call s:map('<Leader>T7', 'CopyWindowToTab(7)')
-  call s:map('<Leader>T8', 'CopyWindowToTab(8)')
-  call s:map('<Leader>T9', 'CopyWindowToTab(9)')
-
-  "}}}
-endif
-
-if (!exists('g:suckless_map_windows') || g:suckless_map_windows)
-  " Window Management {{{
-
-  " Alt+[sdf]: Window mode selection
-  call s:map('<M-s>', 'SetTilingMode("s")')
-  call s:map('<M-d>', 'SetTilingMode("d")')
-  call s:map('<M-f>', 'SetTilingMode("f")')
-
-  " Alt+[hjkl]: select window
-  call s:map('<M-h>', 'WindowSelect("h")')
-  call s:map('<M-j>', 'WindowSelect("j")')
-  call s:map('<M-k>', 'WindowSelect("k")')
-  call s:map('<M-l>', 'WindowSelect("l")')
-
-  " Shift+Alt+[hjkl]: move current window
-  call s:map('<M-H>', 'WindowMove("h")')
-  call s:map('<M-J>', 'WindowMove("j")')
-  call s:map('<M-K>', 'WindowMove("k")')
-  call s:map('<M-L>', 'WindowMove("l")')
-
-  " Ctrl+Alt+[hjkl]: resize current window
-  call s:map('<M-C-h>', 'WindowResize("h")')
-  call s:map('<M-C-j>', 'WindowResize("j")')
-  call s:map('<M-C-k>', 'WindowResize("k")')
-  call s:map('<M-C-l>', 'WindowResize("l")')
-
-  " Alt+[oO]: new horizontal/vertical window
-  call s:map('<M-o>', 'WindowCreate("s")')
-  call s:map('<M-O>', 'WindowCreate("v")')
-
-  " Alt+[cw]: collapse/close current window
-  call s:map('<M-c>', 'WindowCollapse()')
-  call s:map('<M-w>', 'WindowClose()')
-
-  "}}}
-endif
-
-" Public API for user-defined mappings
-function! suckless#nnoremap(shortcut, action)
-  call s:map(a:shortcut, a:action)
+function! s:expand_mappings(shortcut, action)
+  let mappings = []
+  let regex = '\[.*\]'
+  if a:shortcut =~ regex
+    let r_shortcut = matchstr(a:shortcut, regex)[1:-2]
+    let r_action   = matchstr(a:action,   regex)[1:-2]
+    if len(r_shortcut) == len(r_action)
+      for i in range(len(r_shortcut))
+        let shortcut = substitute(a:shortcut, regex, r_shortcut[i], '')
+        let action   = substitute(a:action,   regex, r_action[i],   '')
+        call add(mappings, [ shortcut, action ])
+      endfor
+    endif
+  else
+    call add(mappings, [ a:shortcut, a:action ])
+  endif
+  return mappings
 endfunction
+
+function! s:map(shortcut, action)
+  for [shortcut, action] in s:expand_mappings(a:shortcut, a:action)
+    let shortcut = s:escape_meta(shortcut)
+    exe 'nmap <silent> ' . shortcut . ' :call ' . action . '<CR>'
+  endfor
+endfunction
+"}}}
+
+" Tab Management {{{
+if !exists('g:suckless_map_tabs') || type(g:suckless_map_tabs) != 4
+  let g:suckless_map_tabs = {
+    \       '<M-[123456789]>':       'TabSelect([123456789])',
+    \  '<Leader>[123456789]' :       'TabSelect([123456789])',
+    \ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+    \ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
+    \}
+endif
+for [ shortcut, action ] in items(g:suckless_map_tabs)
+  call s:map(shortcut, action)
+endfor
+"}}}
+
+" Window Management {{{
+if !exists('g:suckless_map_windows') || type(g:suckless_map_windows) != 4
+  let g:suckless_map_windows = {
+    \           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
+    \           '<M-[hjkl]>' :    'WindowSelect("[hjkl]")'   ,
+    \           '<M-[HJKL]>' :      'WindowMove("[hjkl]")'   ,
+    \         '<M-C-[hjkl]>' :    'WindowResize("[hjkl]")'   ,
+    \           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
+    \           '<M-c>'      :  'WindowCollapse()'           ,
+    \           '<M-w>'      :     'WindowClose()'           ,
+    \}
+endif
+for [ shortcut, action ] in items(g:suckless_map_windows)
+  call s:map(shortcut, action)
+endfor
+"}}}
+
+" Public API for user-defined mappings {{{
+function! suckless#nmap(shortcut, action)
+  for [shortcut, action] in s:expand_mappings(a:shortcut, a:action)
+    exe 'nmap <silent> ' . s:escape_meta(shortcut) . ' ' . action
+  endfor
+endfunction
+function! suckless#tmap(shortcut, action)
+  for [shortcut, action] in s:expand_mappings(a:shortcut, a:action)
+    exe 'tmap <silent> ' . s:escape_meta(shortcut) . ' ' . action
+  endfor
+endfunction
+"}}}
+
 "}}}
 
 "|    TODO (not working yet)                                                {{{
