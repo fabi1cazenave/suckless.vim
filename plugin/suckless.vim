@@ -558,7 +558,7 @@ for [ shortcut, action ] in items(g:suckless_map_windows)
 endfor
 "}}}
 
-" Public API for user-defined mappings
+" Public API for user-defined mappings {{{
 function! suckless#nmap(shortcut, action)
   for [shortcut, action] in s:expand_mappings(a:shortcut, a:action)
     exe 'nmap <silent> ' . s:escape_meta(shortcut) . ' ' . action
@@ -569,6 +569,8 @@ function! suckless#tmap(shortcut, action)
     exe 'tmap <silent> ' . s:escape_meta(shortcut) . ' ' . action
   endfor
 endfunction
+"}}}
+
 "}}}
 
 "|    TODO (not working yet)                                                {{{

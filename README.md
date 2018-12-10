@@ -18,17 +18,16 @@ For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by de
           Alt+[hjkl] ⇒ select adjacent window
     Shift+Alt+[hjkl] ⇒ move current window
      Ctrl+Alt+[hjkl] ⇒ resize current window
-
-               Alt+o ⇒ create new window
-               Alt+c ⇒ collapse window
-               Alt+w ⇒ close window
+          Alt+o      ⇒ create new window
+          Alt+c      ⇒ collapse window
+          Alt+w      ⇒ close window
 
 Vim tabs are used as “views”:
 
-         Alt+[123456789] ⇒ select tab [1..9]
-     <Leader>[123456789] ⇒ select tab [1..9]
-    <Leader>t[123456789] ⇒ move current window to tab [1..9]
-    <Leader>T[123456789] ⇒ copy current window to tab [1..9]
+          Alt+[123456789] ⇒ select tab [1..9]
+      <Leader>[123456789] ⇒ select tab [1..9]
+     <Leader>t[123456789] ⇒ move current window to tab [1..9]
+     <Leader>T[123456789] ⇒ copy current window to tab [1..9]
 
 
 Meta/Alt caveats
@@ -94,11 +93,6 @@ let g:suckless_map_windows = {
 If  the <kbd>Alt</kbd> key is not a good option for you, you can do the following to use the `<Leader>` key instead:
 
 ```vim
-let g:suckless_map_tabs = {
-\  '<Leader>[123456789]' :       'TabSelect([123456789])',
-\ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
-\ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
-\}
 let g:suckless_map_windows = {
 \    '<Leader>[sdf]'     :   'SetTilingMode("[sdf]")'    ,
 \    '<Leader>[hjkl]'    :    'WindowSelect("[hjkl]")'   ,
@@ -107,6 +101,11 @@ let g:suckless_map_windows = {
 \    '<Leader>[oO]'      :    'WindowCreate("[sv]")'     ,
 \    '<Leader>c'         :  'WindowCollapse()'           ,
 \    '<Leader>w'         :     'WindowClose()'           ,
+\}
+let g:suckless_map_tabs = {
+\  '<Leader>[123456789]' :       'TabSelect([123456789])',
+\ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+\ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
 \}
 ```
 
