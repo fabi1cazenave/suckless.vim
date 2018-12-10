@@ -1,9 +1,13 @@
 suckless.vim
 ================================================================================
 
-Tiling window management that sucks less - see <http://wmii.suckless.org/>. <br>
-This emulates wmii / i3 in Vim and Neovim as much as possible.
+Tiling window management that sucks less - see <https://dwm.suckless.org/>. <br>
+This plugin emulates [wmii†][1] / [dwm][2] / [i3][3] / [awesome][4] in Vim and Neovim.
 
+  [1]: https://code.google.com/archive/p/wmii/
+  [2]: https://dwm.suckless.org/
+  [3]: https://i3wm.org/
+  [4]: https://awesomewm.org/
 
 Instructions
 --------------------------------------------------------------------------------
@@ -51,63 +55,59 @@ Customization
 
 ### Keyboard Mappings
 
-The default keyboard mappings for tab and window management can be disabled by setting a variable. The following functions are exported and can be mapped as you wish:
+The default keyboard mappings for tab and window management can be customized through two global variables:
 
 ```vim
-let g:suckless_map_windows = 0 " disables the default mappings below:
-"        Alt+[sdf]  ⇒  SetTilingMode("[sdf]")  # [s]tacked, [d]ivided, [f]ullscreen
-"        Alt+[hjkl] ⇒   WindowSelect("[hjkl]")
-"  Shift+Alt+[hjkl] ⇒     WindowMove("[hjkl]")
-"   Ctrl+Alt+[hjkl] ⇒   WindowResize("[hjkl]")
-"        Alt+[oO]   ⇒   WindowCreate("[sv]")   # horizontal [s]plit, [v]ertical split
-"        Alt+c      ⇒ WindowCollapse()
-"        Alt+w      ⇒    WindowClose()
-
-let g:suckless_map_tabs = 0 " disables the default mappings below:
-"        Alt+[123456789] ⇒ TabSelect(n)
-"    <Leader>[123456789] ⇒ TabSelect(n)
-"   <Leader>t[123456789] ⇒ MoveWindowToTab(n)
-"   <Leader>T[123456789] ⇒ CopyWindowToTab(n)
+let g:suckless_map_windows = {
+\           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
+\           '<M-[hjkl]>' :    'WindowSelect("[hjkl]")'   ,
+\           '<M-[HJKL]>' :      'WindowMove("[hjkl]")'   ,
+\         '<M-C-[hjkl]>' :    'WindowResize("[hjkl]")'   ,
+\           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
+\           '<M-c>'      :  'WindowCollapse()'           ,
+\           '<M-w>'      :     'WindowClose()'           ,
+\}
+let g:suckless_map_tabs = {
+\       '<M-[123456789]>':       'TabSelect([123456789])',
+\  '<Leader>[123456789]' :       'TabSelect([123456789])',
+\ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+\ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
+\}
 ```
 
-You can use the plugin’s `nmap` and `tmap` functions to handle <kbd>Alt</kbd> shortcuts easily:
+If you want to match [i3][3]’s mapping, I’d recommend [modifying your i3 configuration][5] to use `hjkl` in i3 — but you could also tweak your Vim mappings to match i3’s default mappings (which use `jkl;` instead of `hjkl`):
+
+  [5]: https://github.com/fabi1cazenave/dotFiles/blob/master/config/i3/config
 
 ```vim
-call suckless#nmap('<M-[hjkl]>' , ':call WindowSelect("[hjkl]")<CR>')
-```
-
-is equivalent to:
-
-```vim
-if g:MetaSendsEscape
-  nmap <silent> <Esc>h :call WindowSelect("h")<CR>
-  nmap <silent> <Esc>j :call WindowSelect("j")<CR>
-  nmap <silent> <Esc>k :call WindowSelect("k")<CR>
-  nmap <silent> <Esc>l :call WindowSelect("l")<CR>
-else
-  nmap <silent> <M-h>  :call WindowSelect("h")<CR>
-  nmap <silent> <M-j>  :call WindowSelect("j")<CR>
-  nmap <silent> <M-k>  :call WindowSelect("k")<CR>
-  nmap <silent> <M-l>  :call WindowSelect("l")<CR>
-endif
+let g:suckless_map_windows = {
+\           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
+\           '<M-[jkl;]>' :    'WindowSelect("[hjkl]")'   ,
+\           '<M-[JKL:]>' :      'WindowMove("[hjkl]")'   ,
+\         '<M-C-[jkl;]>' :    'WindowResize("[hjkl]")'   ,
+\           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
+\           '<M-c>'      :  'WindowCollapse()'           ,
+\           '<M-w>'      :     'WindowClose()'           ,
+\}
 ```
 
 If  the <kbd>Alt</kbd> key is not a good option for you, you can do the following to use the `<Leader>` key instead:
 
 ```vim
-let g:suckless_map_windows = 0
-call suckless#nmap(    '<Leader>[sdf]'   , ':call   SetTilingMode("[sdf]")    <CR>')
-call suckless#nmap(    '<Leader>[hjkl]'  , ':call    WindowSelect("[hjkl]")   <CR>')
-call suckless#nmap(    '<Leader>[HJKL]'  , ':call      WindowMove("[hjkl]")   <CR>')
-call suckless#nmap( '<Leader><C-[hjkl]>' , ':call    WindowResize("[hjkl]")   <CR>')
-call suckless#nmap(    '<Leader>[oO]'    , ':call    WindowCreate("[sv]")     <CR>')
-call suckless#nmap(    '<Leader>c'       , ':call  WindowCollapse()           <CR>')
-call suckless#nmap(    '<Leader>w'       , ':call     WindowClose()           <CR>')
-
-let g:suckless_map_tabs = 0
-call suckless#nmap( '<Leader>[123456789]', ':call       TabSelect([123456789])<CR>')
-call suckless#nmap('<Leader>t[123456789]', ':call MoveWindowToTab([123456789])<CR>')
-call suckless#nmap('<Leader>T[123456789]', ':call CopyWindowToTab([123456789])<CR>')
+let g:suckless_map_tabs = {
+\  '<Leader>[123456789]' :       'TabSelect([123456789])',
+\ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+\ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
+\}
+let g:suckless_map_windows = {
+\    '<Leader>[sdf]'     :   'SetTilingMode("[sdf]")'    ,
+\    '<Leader>[hjkl]'    :    'WindowSelect("[hjkl]")'   ,
+\    '<Leader>[HJKL]'    :      'WindowMove("[hjkl]")'   ,
+\ '<Leader><C-[hjkl]>'   :    'WindowResize("[hjkl]")'   ,
+\    '<Leader>[oO]'      :    'WindowCreate("[sv]")'     ,
+\    '<Leader>c'         :  'WindowCollapse()'           ,
+\    '<Leader>w'         :     'WindowClose()'           ,
+\}
 ```
 
 ### Tab Line & Label

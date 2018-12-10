@@ -528,30 +528,34 @@ endfunction
 "}}}
 
 " Tab Management {{{
-if !exists('g:suckless_map_tabs')
-  let g:suckless_map_tabs = 1 " let the world know these mappings are used
+if !exists('g:suckless_map_tabs') || type(g:suckless_map_tabs) != 4
+  let g:suckless_map_tabs = {
+    \       '<M-[123456789]>':       'TabSelect([123456789])',
+    \  '<Leader>[123456789]' :       'TabSelect([123456789])',
+    \ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+    \ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
+    \}
 endif
-if g:suckless_map_tabs
-  call s:map(       '<M-[123456789]>' ,       'TabSelect([123456789])' )
-  call s:map(  '<Leader>[123456789]'  ,       'TabSelect([123456789])' )
-  call s:map( '<Leader>t[123456789]'  , 'MoveWindowToTab([123456789])' )
-  call s:map( '<Leader>T[123456789]'  , 'CopyWindowToTab([123456789])' )
-endif
+for [ shortcut, action ] in items(g:suckless_map_tabs)
+  call s:map(shortcut, action)
+endfor
 "}}}
 
 " Window Management {{{
-if !exists('g:suckless_map_windows')
-  let g:suckless_map_windows = 1 " let the world know these mappings are used
+if !exists('g:suckless_map_windows') || type(g:suckless_map_windows) != 4
+  let g:suckless_map_windows = {
+    \           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
+    \           '<M-[hjkl]>' :    'WindowSelect("[hjkl]")'   ,
+    \           '<M-[HJKL]>' :      'WindowMove("[hjkl]")'   ,
+    \         '<M-C-[hjkl]>' :    'WindowResize("[hjkl]")'   ,
+    \           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
+    \           '<M-c>'      :  'WindowCollapse()'           ,
+    \           '<M-w>'      :     'WindowClose()'           ,
+    \}
 endif
-if g:suckless_map_windows
-  call s:map(   '<M-[sdf]>'  ,  'SetTilingMode("[sdf]")'  )
-  call s:map(   '<M-[hjkl]>' ,   'WindowSelect("[hjkl]")' )
-  call s:map(   '<M-[HJKL]>' ,     'WindowMove("[hjkl]")' )
-  call s:map( '<M-C-[hjkl]>' ,   'WindowResize("[hjkl]")' )
-  call s:map(   '<M-[oO]>'   ,   'WindowCreate("[sv]")'   )
-  call s:map(   '<M-c>'      , 'WindowCollapse()'         )
-  call s:map(   '<M-w>'      ,    'WindowClose()'         )
-endif
+for [ shortcut, action ] in items(g:suckless_map_windows)
+  call s:map(shortcut, action)
+endfor
 "}}}
 
 " Public API for user-defined mappings
