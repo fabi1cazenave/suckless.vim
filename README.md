@@ -12,7 +12,7 @@ For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by de
 
          Alt+[sdf]  ⇒ tiling mode selection: [s]tacked, [d]ivided, [f]ullscreen
          Alt+[hjkl] ⇒ select adjacent window
-         Alt+[HJKL] ⇒ move current window
+   Shift+Alt+[hjkl] ⇒ move current window
     Ctrl+Alt+[hjkl] ⇒ resize current window
 
               Alt+o ⇒ create new window
@@ -21,10 +21,10 @@ For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by de
 
 Vim tabs are used as “views”:
 
-         Alt+[1234567890] ⇒ select tab [1..10]
-     <Leader>[1234567890] ⇒ select tab [1..10]
-    <Leader>t[1234567890] ⇒ move current window to tab [1..10]
-    <Leader>T[1234567890] ⇒ copy current window to tab [1..10]
+         Alt+[123456789] ⇒ select tab [1..9]
+     <Leader>[123456789] ⇒ select tab [1..9]
+    <Leader>t[123456789] ⇒ move current window to tab [1..9]
+    <Leader>T[123456789] ⇒ copy current window to tab [1..9]
 
 
 Meta/Alt caveats
@@ -55,34 +55,59 @@ The default keyboard mappings for tab and window management can be disabled by s
 
 ```vim
 let g:suckless_map_windows = 0 " disables the default mappings below:
-"        Alt+[sdf]  ⇒ SetTilingMode("sdf")  # [s]tacked, [d]ivided, [f]ullscreen
-"        Alt+[hjkl] ⇒ WindowSelect("hjkl")
-"  Shift+Alt+[hjkl] ⇒ WindowMove("hjkl")
-"   Ctrl+Alt+[hjkl] ⇒ WindowResize("hjkl")
-"        Alt+[oO]   ⇒ WindowCreate("sv")    # horizontal [s]plit, [v]ertical split
+"        Alt+[sdf]  ⇒  SetTilingMode("[sdf]")  # [s]tacked, [d]ivided, [f]ullscreen
+"        Alt+[hjkl] ⇒   WindowSelect("[hjkl]")
+"  Shift+Alt+[hjkl] ⇒     WindowMove("[hjkl]")
+"   Ctrl+Alt+[hjkl] ⇒   WindowResize("[hjkl]")
+"        Alt+[oO]   ⇒   WindowCreate("[sv]")   # horizontal [s]plit, [v]ertical split
 "        Alt+c      ⇒ WindowCollapse()
-"        Alt+w      ⇒ WindowClose()
+"        Alt+w      ⇒    WindowClose()
 
 let g:suckless_map_tabs = 0 " disables the default mappings below:
+"        Alt+[123456789] ⇒ TabSelect(n)
 "    <Leader>[123456789] ⇒ TabSelect(n)
 "   <Leader>t[123456789] ⇒ MoveWindowToTab(n)
 "   <Leader>T[123456789] ⇒ CopyWindowToTab(n)
 ```
 
-You can also use the plugin’s `nnoremap` function to handle <kbd>Alt</kbd> shortcuts easily:
+You can use the plugin’s `nmap` and `tmap` functions to handle <kbd>Alt</kbd> shortcuts easily:
 
 ```vim
-call suckless#nnoremap('<M-n>', 'WindowCreate("s")')
+call suckless#nmap('<M-[hjkl]>' , ':call WindowSelect("[hjkl]")<CR>')
 ```
 
-Which is equivalent to:
+is equivalent to:
 
 ```vim
 if g:MetaSendsEscape
-  nnoremap <silent> <Esc>n :call WindowCreate("s")<CR>
+  nmap <silent> <Esc>h :call WindowSelect("h")<CR>
+  nmap <silent> <Esc>j :call WindowSelect("j")<CR>
+  nmap <silent> <Esc>k :call WindowSelect("k")<CR>
+  nmap <silent> <Esc>l :call WindowSelect("l")<CR>
 else
-  nnoremap <silent> <M-n>  :call WindowCreate("s")<CR>
+  nmap <silent> <M-h>  :call WindowSelect("h")<CR>
+  nmap <silent> <M-j>  :call WindowSelect("j")<CR>
+  nmap <silent> <M-k>  :call WindowSelect("k")<CR>
+  nmap <silent> <M-l>  :call WindowSelect("l")<CR>
 endif
+```
+
+If  the <kbd>Alt</kbd> key is not a good option for you, you can do the following to use the `<Leader>` key instead:
+
+```vim
+let g:suckless_map_windows = 0
+call suckless#nmap(    '<Leader>[sdf]'   , ':call   SetTilingMode("[sdf]")    <CR>')
+call suckless#nmap(    '<Leader>[hjkl]'  , ':call    WindowSelect("[hjkl]")   <CR>')
+call suckless#nmap(    '<Leader>[HJKL]'  , ':call      WindowMove("[hjkl]")   <CR>')
+call suckless#nmap( '<Leader><C-[hjkl]>' , ':call    WindowResize("[hjkl]")   <CR>')
+call suckless#nmap(    '<Leader>[oO]'    , ':call    WindowCreate("[sv]")     <CR>')
+call suckless#nmap(    '<Leader>c'       , ':call  WindowCollapse()           <CR>')
+call suckless#nmap(    '<Leader>w'       , ':call     WindowClose()           <CR>')
+
+let g:suckless_map_tabs = 0
+call suckless#nmap( '<Leader>[123456789]', ':call       TabSelect([123456789])<CR>')
+call suckless#nmap('<Leader>t[123456789]', ':call MoveWindowToTab([123456789])<CR>')
+call suckless#nmap('<Leader>T[123456789]', ':call CopyWindowToTab([123456789])<CR>')
 ```
 
 ### Tab Line & Label
