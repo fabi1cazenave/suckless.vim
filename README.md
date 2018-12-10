@@ -10,14 +10,14 @@ Instructions
 
 For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by default:
 
-         Alt+[sdf]  ⇒ tiling mode selection: [s]tacked, [d]ivided, [f]ullscreen
-         Alt+[hjkl] ⇒ select adjacent window
-   Shift+Alt+[hjkl] ⇒ move current window
-    Ctrl+Alt+[hjkl] ⇒ resize current window
+          Alt+[sdf]  ⇒ tiling mode selection: [s]tacked, [d]ivided, [f]ullscreen
+          Alt+[hjkl] ⇒ select adjacent window
+    Shift+Alt+[hjkl] ⇒ move current window
+     Ctrl+Alt+[hjkl] ⇒ resize current window
 
-              Alt+o ⇒ create new window
-              Alt+c ⇒ collapse window
-              Alt+w ⇒ close window
+               Alt+o ⇒ create new window
+               Alt+c ⇒ collapse window
+               Alt+w ⇒ close window
 
 Vim tabs are used as “views”:
 
