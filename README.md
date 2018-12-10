@@ -1,9 +1,13 @@
 suckless.vim
 ================================================================================
 
-Tiling window management that sucks less - see <http://wmii.suckless.org/>. <br>
-This emulates wmii / i3 in Vim and Neovim as much as possible.
+Tiling window management that sucks less - see <https://dwm.suckless.org/>. <br>
+This plugin emulates [wmii†][1] / [dwm][2] / [i3][3] / [awesome][4] in Vim and Neovim.
 
+  [1]: https://code.google.com/archive/p/wmii/
+  [2]: https://dwm.suckless.org/
+  [3]: https://i3wm.org/
+  [4]: https://awesomewm.org/
 
 Instructions
 --------------------------------------------------------------------------------
@@ -14,17 +18,16 @@ For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by de
           Alt+[hjkl] ⇒ select adjacent window
     Shift+Alt+[hjkl] ⇒ move current window
      Ctrl+Alt+[hjkl] ⇒ resize current window
-
-               Alt+o ⇒ create new window
-               Alt+c ⇒ collapse window
-               Alt+w ⇒ close window
+          Alt+o      ⇒ create new window
+          Alt+c      ⇒ collapse window
+          Alt+w      ⇒ close window
 
 Vim tabs are used as “views”:
 
-         Alt+[123456789] ⇒ select tab [1..9]
-     <Leader>[123456789] ⇒ select tab [1..9]
-    <Leader>t[123456789] ⇒ move current window to tab [1..9]
-    <Leader>T[123456789] ⇒ copy current window to tab [1..9]
+          Alt+[123456789] ⇒ select tab [1..9]
+      <Leader>[123456789] ⇒ select tab [1..9]
+     <Leader>t[123456789] ⇒ move current window to tab [1..9]
+     <Leader>T[123456789] ⇒ copy current window to tab [1..9]
 
 
 Meta/Alt caveats
@@ -51,39 +54,59 @@ Customization
 
 ### Keyboard Mappings
 
-The default keyboard mappings for tab and window management can be disabled by setting a variable. The following functions are exported and can be mapped as you wish:
+The default keyboard mappings for tab and window management can be customized through two global variables:
 
 ```vim
-let g:suckless_map_windows = 0 " disables the default mappings below:
-"        Alt+[sdf]  ⇒ SetTilingMode("sdf")  # [s]tacked, [d]ivided, [f]ullscreen
-"        Alt+[hjkl] ⇒ WindowSelect("hjkl")
-"  Shift+Alt+[hjkl] ⇒ WindowMove("hjkl")
-"   Ctrl+Alt+[hjkl] ⇒ WindowResize("hjkl")
-"        Alt+[oO]   ⇒ WindowCreate("sv")    # horizontal [s]plit, [v]ertical split
-"        Alt+c      ⇒ WindowCollapse()
-"        Alt+w      ⇒ WindowClose()
-
-let g:suckless_map_tabs = 0 " disables the default mappings below:
-"        Alt+[123456789] ⇒ TabSelect(n)
-"    <Leader>[123456789] ⇒ TabSelect(n)
-"   <Leader>t[123456789] ⇒ MoveWindowToTab(n)
-"   <Leader>T[123456789] ⇒ CopyWindowToTab(n)
+let g:suckless_map_windows = {
+\           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
+\           '<M-[hjkl]>' :    'WindowSelect("[hjkl]")'   ,
+\           '<M-[HJKL]>' :      'WindowMove("[hjkl]")'   ,
+\         '<M-C-[hjkl]>' :    'WindowResize("[hjkl]")'   ,
+\           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
+\           '<M-c>'      :  'WindowCollapse()'           ,
+\           '<M-w>'      :     'WindowClose()'           ,
+\}
+let g:suckless_map_tabs = {
+\       '<M-[123456789]>':       'TabSelect([123456789])',
+\  '<Leader>[123456789]' :       'TabSelect([123456789])',
+\ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+\ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
+\}
 ```
 
-You can also use the plugin’s `nnoremap` function to handle <kbd>Alt</kbd> shortcuts easily:
+If you want to match [i3][3]’s mapping, I’d recommend [modifying your i3 configuration][5] to use `hjkl` in i3 — but you could also tweak your Vim mappings to match i3’s default mappings (which use `jkl;` instead of `hjkl`):
+
+  [5]: https://github.com/fabi1cazenave/dotFiles/blob/master/config/i3/config
 
 ```vim
-call suckless#nnoremap('<M-n>', 'WindowCreate("s")')
+let g:suckless_map_windows = {
+\           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
+\           '<M-[jkl;]>' :    'WindowSelect("[hjkl]")'   ,
+\           '<M-[JKL:]>' :      'WindowMove("[hjkl]")'   ,
+\         '<M-C-[jkl;]>' :    'WindowResize("[hjkl]")'   ,
+\           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
+\           '<M-c>'      :  'WindowCollapse()'           ,
+\           '<M-w>'      :     'WindowClose()'           ,
+\}
 ```
 
-Which is equivalent to:
+If  the <kbd>Alt</kbd> key is not a good option for you, you can do the following to use the `<Leader>` key instead:
 
 ```vim
-if g:MetaSendsEscape
-  nnoremap <silent> <Esc>n :call WindowCreate("s")<CR>
-else
-  nnoremap <silent> <M-n>  :call WindowCreate("s")<CR>
-endif
+let g:suckless_map_windows = {
+\    '<Leader>[sdf]'     :   'SetTilingMode("[sdf]")'    ,
+\    '<Leader>[hjkl]'    :    'WindowSelect("[hjkl]")'   ,
+\    '<Leader>[HJKL]'    :      'WindowMove("[hjkl]")'   ,
+\ '<Leader><C-[hjkl]>'   :    'WindowResize("[hjkl]")'   ,
+\    '<Leader>[oO]'      :    'WindowCreate("[sv]")'     ,
+\    '<Leader>c'         :  'WindowCollapse()'           ,
+\    '<Leader>w'         :     'WindowClose()'           ,
+\}
+let g:suckless_map_tabs = {
+\  '<Leader>[123456789]' :       'TabSelect([123456789])',
+\ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+\ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
+\}
 ```
 
 ### Tab Line & Label
