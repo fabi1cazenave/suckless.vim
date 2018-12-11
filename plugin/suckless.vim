@@ -243,58 +243,58 @@ function! SetTilingMode(mode) "{{{
   let t:windowMode = a:mode
 endfunction "}}}
 
-function! SelectWindow(cmd) "{{{
+function! SelectWindow(direction) "{{{
   let w:maximized = 0
 
   " issue the corresponding 'wincmd'
   let winnr = winnr()
-  exe "wincmd " . a:cmd
+  exe "wincmd " . a:direction
 
   " wrap around if needed
   if winnr() == winnr
     " vertical wrapping {{{
-    if "jk" =~ a:cmd
+    if "jk" =~ a:direction
       " wrap around in current column
       if g:suckless_wrap_around_jk == 1
         let tmpnr = -1
         while tmpnr != winnr()
           let tmpnr = winnr()
-          if a:cmd == "j"
+          if a:direction == "j"
             wincmd k
-          elseif a:cmd == "k"
+          elseif a:direction == "k"
             wincmd j
           endif
         endwhile
       " select next/previous window
       elseif g:suckless_wrap_around_jk == 2
-        if a:cmd == "j"
+        if a:direction == "j"
           wincmd w
-        elseif a:cmd == "k"
+        elseif a:direction == "k"
           wincmd W
         endif
       endif
     endif "}}}
     " horizontal wrapping {{{
-    if "hl" =~ a:cmd
+    if "hl" =~ a:direction
       " wrap around in current window
       if g:suckless_wrap_around_hl == 1
         let tmpnr = -1
         while tmpnr != winnr()
           let tmpnr = winnr()
-          if a:cmd == "h"
+          if a:direction == "h"
             wincmd l
-          elseif a:cmd == "l"
+          elseif a:direction == "l"
             wincmd h
           endif
         endwhile
       " select next/previous tab
       elseif g:suckless_wrap_around_hl == 2
-        if a:cmd == "h"
+        if a:direction == "h"
           if tabpagenr() > 1
             tabprev
             wincmd b
           endif
-        elseif a:cmd == "l"
+        elseif a:direction == "l"
           if tabpagenr() < tabpagenr('$')
             tabnext
             wincmd t
@@ -302,11 +302,6 @@ function! SelectWindow(cmd) "{{{
         endif
       endif
     endif "}}}
-  endif
-
-  " if the window height is modified, switch to divided mode
-  if "+-" =~ a:cmd
-    let t:windowMode = "D"
   endif
 
   " resize window according to the current window mode
@@ -321,7 +316,7 @@ function! SelectWindow(cmd) "{{{
   endif
 
   " ensure the window width is greater or equal to the minimum
-  if "hl" =~ a:cmd && winwidth(0) < g:suckless_min_width
+  if "hl" =~ a:direction && winwidth(0) < g:suckless_min_width
     exe "set winwidth=" . g:suckless_min_width
   endif
 endfunction "}}}
