@@ -59,16 +59,16 @@ The default keyboard mappings for tab and window management can be customized th
 ```vim
 let g:suckless_map_windows = {
 \           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
-\           '<M-[hjkl]>' :    'WindowSelect("[hjkl]")'   ,
-\           '<M-[HJKL]>' :      'WindowMove("[hjkl]")'   ,
-\         '<M-C-[hjkl]>' :    'WindowResize("[hjkl]")'   ,
-\           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
-\           '<M-c>'      :  'WindowCollapse()'           ,
-\           '<M-w>'      :     'WindowClose()'           ,
+\           '<M-[hjkl]>' :    'SelectWindow("[hjkl]")'   ,
+\           '<M-[HJKL]>' :      'MoveWindow("[hjkl]")'   ,
+\         '<M-C-[hjkl]>' :    'ResizeWindow("[hjkl]")'   ,
+\           '<M-[oO]>'   :    'CreateWindow("[sv]")'     ,
+\           '<M-c>'      :  'CollapseWindow()'           ,
+\           '<M-w>'      :     'CloseWindow()'           ,
 \}
 let g:suckless_map_tabs = {
-\       '<M-[123456789]>':       'TabSelect([123456789])',
-\  '<Leader>[123456789]' :       'TabSelect([123456789])',
+\       '<M-[123456789]>':       'SelectTab([123456789])',
+\  '<Leader>[123456789]' :       'SelectTab([123456789])',
 \ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
 \ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
 \}
@@ -81,12 +81,12 @@ If you want to match [i3][3]’s mapping, I’d recommend [modifying your i3 con
 ```vim
 let g:suckless_map_windows = {
 \           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
-\           '<M-[jkl;]>' :    'WindowSelect("[hjkl]")'   ,
-\           '<M-[JKL:]>' :      'WindowMove("[hjkl]")'   ,
-\         '<M-C-[jkl;]>' :    'WindowResize("[hjkl]")'   ,
-\           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
-\           '<M-c>'      :  'WindowCollapse()'           ,
-\           '<M-w>'      :     'WindowClose()'           ,
+\           '<M-[jkl;]>' :    'SelectWindow("[hjkl]")'   ,
+\           '<M-[JKL:]>' :      'MoveWindow("[hjkl]")'   ,
+\         '<M-C-[jkl;]>' :    'ResizeWindow("[hjkl]")'   ,
+\           '<M-[oO]>'   :    'CreateWindow("[sv]")'     ,
+\           '<M-c>'      :  'CollapseWindow()'           ,
+\           '<M-w>'      :     'CloseWindow()'           ,
 \}
 ```
 
@@ -95,15 +95,15 @@ If  the <kbd>Alt</kbd> key is not a good option for you, you can do the followin
 ```vim
 let g:suckless_map_windows = {
 \    '<Leader>[sdf]'     :   'SetTilingMode("[sdf]")'    ,
-\    '<Leader>[hjkl]'    :    'WindowSelect("[hjkl]")'   ,
-\    '<Leader>[HJKL]'    :      'WindowMove("[hjkl]")'   ,
-\ '<Leader><C-[hjkl]>'   :    'WindowResize("[hjkl]")'   ,
-\    '<Leader>[oO]'      :    'WindowCreate("[sv]")'     ,
-\    '<Leader>c'         :  'WindowCollapse()'           ,
-\    '<Leader>w'         :     'WindowClose()'           ,
+\    '<Leader>[hjkl]'    :    'SelectWindow("[hjkl]")'   ,
+\    '<Leader>[HJKL]'    :      'MoveWindow("[hjkl]")'   ,
+\ '<Leader><C-[hjkl]>'   :    'ResizeWindow("[hjkl]")'   ,
+\    '<Leader>[oO]'      :    'CreateWindow("[sv]")'     ,
+\    '<Leader>c'         :  'CollapseWindow()'           ,
+\    '<Leader>w'         :     'CloseWindow()'           ,
 \}
 let g:suckless_map_tabs = {
-\  '<Leader>[123456789]' :       'TabSelect([123456789])',
+\  '<Leader>[123456789]' :       'SelectTab([123456789])',
 \ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
 \ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
 \}
