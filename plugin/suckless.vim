@@ -333,14 +333,15 @@ function! MoveWindow(direction) "{{{
   if a:direction == "j"        " move window to the previous row
     wincmd j
     if winnr() != winnr
-      "exe "normal <C-W><C-X>"
       wincmd k
       wincmd x
+      stopinsert
       wincmd j
     endif
 
   elseif a:direction == "k"    " move window to the next row
     wincmd k
+    stopinsert
     if winnr() != winnr
       wincmd x
     endif
@@ -359,6 +360,7 @@ function! MoveWindow(direction) "{{{
     else
       " move window to an existing column
       wincmd p
+      stopinsert
       wincmd c
       if t:windowMode == "S"
         wincmd _
@@ -375,44 +377,25 @@ function! MoveWindow(direction) "{{{
 endfunction "}}}
 
 function! ResizeWindow(direction) "{{{
-  let winnr = winnr()
-
-  if a:direction == "j"
-    wincmd j
-    if winnr() != winnr
-      wincmd p
-      exe g:suckless_inc_height . "wincmd +"
-    else
-      exe g:suckless_inc_height . "wincmd -"
+  function! HasAdjacentWindow(direction) "{{{
+    " test if there's another window in the given direction
+    let winnr = winnr()
+    exe 'wincmd ' . a:direction
+    let rv = (winnr() != winnr)
+    if rv
+      stopinsert " (just in case the adjacent window was in auto-insert)
+      wincmd p   " get back to the original window
     endif
+    return rv
+  endfunction "}}}
 
-  elseif a:direction == "k"
-    wincmd j
-    if winnr() != winnr
-      wincmd p
-      exe g:suckless_inc_height . "wincmd -"
-    else
-      exe g:suckless_inc_height . "wincmd +"
-    endif
-
-  elseif a:direction == "h"
-    wincmd l
-    if winnr() != winnr
-      wincmd p
-      exe g:suckless_inc_height . "wincmd <"
-    else
-      exe g:suckless_inc_height . "wincmd >"
-    endif
-
-  elseif a:direction == "l"
-    wincmd l
-    if winnr() != winnr
-      wincmd p
-      exe g:suckless_inc_height . "wincmd >"
-    else
-      exe g:suckless_inc_height . "wincmd <"
-    endif
-
+  if 'jk' =~ a:direction
+    let t:windowMode = 'D'
+    let cmd = xor(HasAdjacentWindow('j'), 'j' == a:direction) ? '-' : '+'
+    exe g:suckless_inc_height . ' wincmd ' . cmd
+  elseif 'hl' =~ a:direction
+    let cmd = xor(HasAdjacentWindow('l'), 'l' == a:direction) ? '<' : '>'
+    exe g:suckless_inc_width . ' wincmd ' . cmd
   endif
 endfunction "}}}
 
