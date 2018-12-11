@@ -115,12 +115,28 @@ if (!exists('g:suckless_guitablabel') || g:suckless_guitablabel)
   set guitablabel=%!SucklessTabLabel()
 endif
  
-" TabSelect:
-function! TabSelect(viewnr) "{{{
-  if a:viewnr >= 9 || a:viewnr > tabpagenr('$')
-    tablast
-  else
-    exe 'tabnext ' . a:viewnr
+" SelectTab: select tab by view number or by direction
+function! SelectTab(dir_or_viewnr) "{{{
+  if type(a:dir_or_viewnr) == 0
+    if a:dir_or_viewnr >= 9 || a:dir_or_viewnr > tabpagenr('$')
+      tablast
+    else
+      exe "tabnext " . a:dir_or_viewnr
+    endif
+  elseif a:dir_or_viewnr == 'h'
+    tabprev
+  elseif a:dir_or_viewnr == 'l'
+    tabnext
+  endif
+endfunction "}}}
+
+" MoveTab: move tab to the left or right
+function! MoveTab(direction) "{{{
+  let tabnr = tabpagenr()
+  if a:direction == 'h' && tabnr > 1
+    exe "tabmove " . (tabnr - 2)
+  elseif a:direction == 'l' && tabnr < tabpagenr('$')
+    exe "tabmove " . (tabnr + 1)
   endif
 endfunction "}}}
 
@@ -153,11 +169,17 @@ function! s:MoveToTab(viewnr, copy) "{{{
   " display the current buffer
   exe "b" . bufnr
 endfunction "}}}
+
 function! MoveWindowToTab(viewnr)
   call s:MoveToTab(a:viewnr, 0)
 endfunction
+
 function! CopyWindowToTab(viewnr)
   call s:MoveToTab(a:viewnr, 1)
+endfunction
+
+function! CreateTab()
+  tabnew
 endfunction
 "}}}
 
@@ -221,7 +243,7 @@ function! SetTilingMode(mode) "{{{
   let t:windowMode = a:mode
 endfunction "}}}
 
-function! WindowSelect(cmd) "{{{
+function! SelectWindow(cmd) "{{{
   let w:maximized = 0
 
   " issue the corresponding 'wincmd'
@@ -304,7 +326,7 @@ function! WindowSelect(cmd) "{{{
   endif
 endfunction "}}}
 
-function! WindowMove(direction) "{{{
+function! MoveWindow(direction) "{{{
   let winnr = winnr()
   let bufnr = bufnr("%")
 
@@ -352,7 +374,7 @@ function! WindowMove(direction) "{{{
   endif
 endfunction "}}}
 
-function! WindowResize(direction) "{{{
+function! ResizeWindow(direction) "{{{
   let winnr = winnr()
 
   if a:direction == "j"
@@ -394,23 +416,23 @@ function! WindowResize(direction) "{{{
   endif
 endfunction "}}}
 
-function! WindowCreate(direction) "{{{
+function! CreateWindow(direction) "{{{
   wincmd n
   if t:windowMode == "S"
     wincmd _
   endif
   if (a:direction == "v")
-    call WindowMove("l")
+    call MoveWindow("l")
   endif
 endfunction "}}}
 
-function! WindowCollapse() "{{{
+function! CollapseWindow() "{{{
   if t:windowMode == "D"
     resize 0
   endif
 endfunction "}}}
 
-function! WindowClose() "{{{
+function! CloseWindow() "{{{
   wincmd c
   if t:windowMode == "S"
     wincmd _
@@ -530,8 +552,8 @@ endfunction
 " Tab Management {{{
 if !exists('g:suckless_map_tabs') || type(g:suckless_map_tabs) != 4
   let g:suckless_map_tabs = {
-    \       '<M-[123456789]>':       'TabSelect([123456789])',
-    \  '<Leader>[123456789]' :       'TabSelect([123456789])',
+    \       '<M-[123456789]>':       'SelectTab([123456789])',
+    \  '<Leader>[123456789]' :       'SelectTab([123456789])',
     \ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
     \ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
     \}
@@ -545,12 +567,12 @@ endfor
 if !exists('g:suckless_map_windows') || type(g:suckless_map_windows) != 4
   let g:suckless_map_windows = {
     \           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
-    \           '<M-[hjkl]>' :    'WindowSelect("[hjkl]")'   ,
-    \           '<M-[HJKL]>' :      'WindowMove("[hjkl]")'   ,
-    \         '<M-C-[hjkl]>' :    'WindowResize("[hjkl]")'   ,
-    \           '<M-[oO]>'   :    'WindowCreate("[sv]")'     ,
-    \           '<M-c>'      :  'WindowCollapse()'           ,
-    \           '<M-w>'      :     'WindowClose()'           ,
+    \           '<M-[hjkl]>' :    'SelectWindow("[hjkl]")'   ,
+    \           '<M-[HJKL]>' :      'MoveWindow("[hjkl]")'   ,
+    \         '<M-C-[hjkl]>' :    'ResizeWindow("[hjkl]")'   ,
+    \           '<M-[oO]>'   :    'CreateWindow("[sv]")'     ,
+    \           '<M-c>'      :  'CollapseWindow()'           ,
+    \           '<M-w>'      :     'CloseWindow()'           ,
     \}
 endif
 for [ shortcut, action ] in items(g:suckless_map_windows)
