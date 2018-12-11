@@ -116,7 +116,7 @@ if (!exists('g:suckless_guitablabel') || g:suckless_guitablabel)
 endif
  
 " SelectTab: select tab by view number or by direction
-function! SelectTab(dir_or_viewnr) "{{{
+function! SelectTab(dir_or_viewnr, ...) "{{{
   if type(a:dir_or_viewnr) == 0
     if a:dir_or_viewnr >= 9 || a:dir_or_viewnr > tabpagenr('$')
       tablast
@@ -131,13 +131,14 @@ function! SelectTab(dir_or_viewnr) "{{{
 endfunction "}}}
 
 " MoveTab: move tab to the left or right
-function! MoveTab(direction) "{{{
+function! MoveTab(direction, ...) "{{{
   let tabnr = tabpagenr()
   if a:direction == 'h' && tabnr > 1
     exe "tabmove " . (tabnr - 2)
   elseif a:direction == 'l' && tabnr < tabpagenr('$')
     exe "tabmove " . (tabnr + 1)
   endif
+  if a:0 | startinsert | endif
 endfunction "}}}
 
 " MoveToTab: move/copy current window to another tab
@@ -170,15 +171,17 @@ function! s:MoveToTab(viewnr, copy) "{{{
   exe "b" . bufnr
 endfunction "}}}
 
-function! MoveWindowToTab(viewnr)
+function! MoveWindowToTab(viewnr, ...)
   call s:MoveToTab(a:viewnr, 0)
+  if a:0 | startinsert | endif
 endfunction
 
-function! CopyWindowToTab(viewnr)
+function! CopyWindowToTab(viewnr, ...)
   call s:MoveToTab(a:viewnr, 1)
+  if a:0 | startinsert | endif
 endfunction
 
-function! CreateTab()
+function! CreateTab(...)
   tabnew
 endfunction
 "}}}
@@ -192,7 +195,7 @@ function! GetTilingMode(mode) "{{{
   endif
 endfunction "}}}
 
-function! SetTilingMode(mode) "{{{
+function! SetTilingMode(mode, ...) "{{{
   " apply new window mode
   if a:mode == "F"        " Fullscreen mode
     let t:windowSizes = winrestcmd()
@@ -241,9 +244,10 @@ function! SetTilingMode(mode) "{{{
 
   " store the new window mode in the current tab's global variables
   let t:windowMode = a:mode
+  if a:0 | startinsert | endif
 endfunction "}}}
 
-function! SelectWindow(direction) "{{{
+function! SelectWindow(direction, ...) "{{{
   let w:maximized = 0
 
   " issue the corresponding 'wincmd'
@@ -321,7 +325,7 @@ function! SelectWindow(direction) "{{{
   endif
 endfunction "}}}
 
-function! MoveWindow(direction) "{{{
+function! MoveWindow(direction, ...) "{{{
   let winnr = winnr()
   let bufnr = bufnr("%")
 
@@ -369,9 +373,10 @@ function! MoveWindow(direction) "{{{
     endif
 
   endif
+  if a:0 | startinsert | endif
 endfunction "}}}
 
-function! ResizeWindow(direction) "{{{
+function! ResizeWindow(direction, ...) "{{{
   function! HasAdjacentWindow(direction) "{{{
     " test if there's another window in the given direction
     let winnr = winnr()
@@ -392,25 +397,28 @@ function! ResizeWindow(direction) "{{{
     let cmd = xor(HasAdjacentWindow('l'), 'l' == a:direction) ? '<' : '>'
     exe g:suckless_inc_width . ' wincmd ' . cmd
   endif
+
+  if a:0 | startinsert | endif
 endfunction "}}}
 
-function! CreateWindow(direction) "{{{
+function! CreateWindow(direction, ...) "{{{
   wincmd n
   if t:windowMode == "S"
     wincmd _
   endif
   if (a:direction == "v")
     call MoveWindow("l")
+    stopinsert
   endif
 endfunction "}}}
 
-function! CollapseWindow() "{{{
+function! CollapseWindow(...) "{{{
   if t:windowMode == "D"
     resize 0
   endif
 endfunction "}}}
 
-function! CloseWindow() "{{{
+function! CloseWindow(...) "{{{
   wincmd c
   if t:windowMode == "S"
     wincmd _
@@ -520,9 +528,15 @@ function! s:expand_mappings(shortcut, action)
 endfunction
 
 function! s:map(shortcut, action)
+  let mapterm = has('nvim') && a:shortcut =~ 'M-'
   for [shortcut, action] in s:expand_mappings(a:shortcut, a:action)
-    let shortcut = s:escape_meta(shortcut)
-    exe 'nmap <silent> ' . shortcut . ' :call ' . action . '<CR>'
+    let map = 'map <silent> ' . s:escape_meta(shortcut)
+    exe 'n' . map . ' :call ' . action . '<CR>'
+    if mapterm " stay in insert mode when moving / resizing windows
+      " pass a boolean '1' argument to mean we were in insert mode
+      let action = substitute(action, ')$', ',1)', '')
+      exe 't' . map . ' <C-\><C-n>:call ' . action . '<CR>'
+    endif
   endfor
 endfunction
 "}}}
