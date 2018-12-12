@@ -34,45 +34,24 @@ endif                                   " 2 = wrap in all tabs
 " SucklessTabLine: terminal tabs
 function! SucklessTabLine() "{{{
   let line = ''
-  for i in range(tabpagenr('$'))
-    " select the highlighting
-    if i+1 == tabpagenr()
-      let line .= '%#TabLineSel#'
-    else
-      let line .= '%#TabLine#'
-    endif
 
+  for i in range(tabpagenr('$'))
+    " highlighting
+    let line .= (i+1 == tabpagenr()) ? '%#TabLineSel#' : '%#TabLine#'
     " set the tab page number (for mouse clicks)
     let line .= '%' . (i+1) . 'T'
-    let line .= ' [' . (i+1)
-
-    " modified since the last save?
-    let buflist = tabpagebuflist(i+1)
-    for bufnr in buflist
-      if getbufvar(bufnr, '&modified')
-        let line .= '*'
-        break
-      endif
-    endfor
-    let line .= ']'
-
-    " add the file name without path information
-    let buf = buflist[tabpagewinnr(i+1) - 1]
-    let name = bufname(buf)
-    if getbufvar(buf, '&modified') == 1
-      let name .= " +"
-    endif
-    let line .= fnamemodify(name, ':t') . ' '
+    " tab number + active buffer name
+    let line .= SucklessTabLabel(i+1)
   endfor
 
   " after the last tab fill with TabLineFill and reset tab page nr
   let line .= '%#TabLineFill#%T'
 
-  " right-align the label to close the current tab page
+  " right-align the 'X' label to close the current tab page
   if tabpagenr('$') > 1
     let line .= '%=%#TabLine#%999X X'
   endif
-  "echomsg 's:' . s
+
   return line
 endfunction "}}}
 if (!exists('g:suckless_tabline') || g:suckless_tabline)
@@ -80,41 +59,32 @@ if (!exists('g:suckless_tabline') || g:suckless_tabline)
 endif
 
 " SucklessTabLabel: GUI tabs
-function! SucklessTabLabel() "{{{
-  " see: http://blog.golden-ratio.net/2008/08/19/using-tabs-in-vim/
+function! SucklessTabLabel(...) "{{{
+  let space = a:0 ? '' : ' '
+  let tabnr = a:0 ? a:1 : v:lnum
+  let buflist = tabpagebuflist(tabnr)
 
-  " add the Tab number
-  let label = '['.tabpagenr()
-
-  " modified since the last save?
-  let buflist = tabpagebuflist(v:lnum)
+  " [num] + modified since the last save?
+  let label = ' [' . tabnr
   for bufnr in buflist
     if getbufvar(bufnr, '&modified')
       let label .= '*'
       break
     endif
   endfor
+  let label .= ']' . space
 
-  " count number of open windows in the Tab
-  "let wincount = tabpagewinnr(v:lnum, '$')
-  "if wincount > 1
-    "let label .= ', '.wincount
-  "endif
-  let label .= '] '
-
-  " add the file name without path information
-  let name = bufname(buflist[tabpagewinnr(v:lnum) - 1])
-  let label .= fnamemodify(name, ':t')
-  if &modified == 1
-    let label .= " +"
-  endif
+  " file name
+  let buf = buflist[tabpagewinnr(tabnr) - 1]
+  let label .= fnamemodify(bufname(buf), ':t')
+  let label .= getbufvar(buf, '&modified') ? ' + ' : ' '
 
   return label
 endfunction "}}}
 if (!exists('g:suckless_guitablabel') || g:suckless_guitablabel)
   set guitablabel=%!SucklessTabLabel()
 endif
- 
+
 " SelectTab: select tab by view number or by direction
 function! SelectTab(dir_or_viewnr, ...) "{{{
   if type(a:dir_or_viewnr) == 0
