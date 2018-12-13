@@ -167,24 +167,24 @@ endfunction "}}}
 
 function! SetTilingMode(mode, ...) "{{{
   " apply new window mode
-  if a:mode == "F"        " Fullscreen mode
+  if a:mode == 'f'        " [f]ullscreen mode
     let t:windowSizes = winrestcmd()
     wincmd |              "   maximize current window vertically and horizontally
     wincmd _
     set eadirection=both
-  elseif a:mode == "D"    " Divided mode
+  elseif a:mode == 'd'    " [d]ivided mode
     let w:maximized = 0
     set eadirection=both  "   hack: create a new window and delete it
     wincmd n              "   to force windows to get the same height
     wincmd c
-  elseif a:mode == "S"    " Stacked mode
+  elseif a:mode == 's'    " [s]tacked mode
     let w:maximized = 1
     wincmd _              "   maximize current window vertically
     set eadirection=hor
   endif
 
   " when getting back from fullscreen mode, restore all minimum widths
-  if t:windowMode == "F" && a:mode != "F"
+  if t:windowMode == 'f' && a:mode != 'f'
     if exists("t:windowSizes")
       exe t:windowSizes
     else
@@ -199,7 +199,7 @@ function! SetTilingMode(mode, ...) "{{{
           exe "set winwidth=" . g:suckless_min_width
         endif
         " balance window heights in this column if switching to 'Divided' mode
-        if a:mode == "D"
+        if a:mode == 'd'
           wincmd n
           wincmd c
         endif
@@ -608,14 +608,14 @@ endfunction "}}}
 
 " }}}
 
-if has("autocmd")
+if has('autocmd')
   " 'Divided' mode by default - each tab has its own window mode
-  autocmd! TabEnter * call GetTilingMode("D")
+  autocmd! TabEnter * call GetTilingMode('d')
   " Resize all windows when Vim is resized.
   autocmd! VimResized * call AutoResizeAllTabs()
   " developer candy: apply all changes immediately
   autocmd! BufWritePost suckless.vim source %
 endif
-call GetTilingMode("D")
+call GetTilingMode('d')
 
 " vim: set fdm=marker fmr={{{,}}} fdl=0:
