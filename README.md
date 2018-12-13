@@ -19,13 +19,11 @@ For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by de
     Shift+Alt+[hjkl] ⇒ move current window
      Ctrl+Alt+[hjkl] ⇒ resize current window
           Alt+o      ⇒ create new window
-          Alt+c      ⇒ collapse window
           Alt+w      ⇒ close window
 
 Vim tabs are used as “views”:
 
           Alt+[123456789] ⇒ select tab [1..9]
-      <Leader>[123456789] ⇒ select tab [1..9]
      <Leader>t[123456789] ⇒ move current window to tab [1..9]
      <Leader>T[123456789] ⇒ copy current window to tab [1..9]
 
@@ -54,59 +52,55 @@ Customization
 
 ### Keyboard Mappings
 
-The default keyboard mappings for tab and window management can be customized through two global variables:
+The default keyboard mappings use the <kbd>Alt</kbd> key for window-related commands and `<Leader>` for tab-related commands. This can be customized with a global variable:
 
 ```vim
-let g:suckless_map_windows = {
-\           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
-\           '<M-[hjkl]>' :    'SelectWindow("[hjkl]")'   ,
-\           '<M-[HJKL]>' :      'MoveWindow("[hjkl]")'   ,
-\         '<M-C-[hjkl]>' :    'ResizeWindow("[hjkl]")'   ,
-\           '<M-[oO]>'   :    'CreateWindow("[sv]")'     ,
-\           '<M-c>'      :  'CollapseWindow()'           ,
-\           '<M-w>'      :     'CloseWindow()'           ,
-\}
-let g:suckless_map_tabs = {
-\       '<M-[123456789]>':       'SelectTab([123456789])',
-\  '<Leader>[123456789]' :       'SelectTab([123456789])',
-\ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
-\ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
+let g:suckless_mappings = {
+\        '<M-[sdf]>'      :   'SetTilingMode("[sdf]")'    ,
+\        '<M-[hjkl]>'     :    'SelectWindow("[hjkl]")'   ,
+\        '<M-[HJKL]>'     :      'MoveWindow("[hjkl]")'   ,
+\      '<C-M-[hjkl]>'     :    'ResizeWindow("[hjkl]")'   ,
+\        '<M-[oO]>'       :    'CreateWindow("[sv]")'     ,
+\        '<M-w>'          :     'CloseWindow()'           ,
+\   '<Leader>[123456789]' :       'SelectTab([123456789])',
+\  '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+\  '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
 \}
 ```
 
-If you want to match [i3][3]’s mapping, I’d recommend [modifying your i3 configuration][5] to use `hjkl` in i3 — but you could also tweak your Vim mappings to match i3’s default mappings (which use `jkl;` instead of `hjkl`):
+If you want to match [i3][3]’s mapping, I’d recommend [modifying your i3 configuration][5] to use `hjkl` in i3 — but you could also tweak your Vim mappings to match i3’s default mappings (which use `jkl;` instead of `hjkl`) and use <kbd>Alt</kbd> instead of `<Leader>` for tab-related commands:
 
   [5]: https://github.com/fabi1cazenave/dotFiles/blob/master/config/i3/config
 
 ```vim
-let g:suckless_map_windows = {
-\           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
-\           '<M-[jkl;]>' :    'SelectWindow("[hjkl]")'   ,
-\           '<M-[JKL:]>' :      'MoveWindow("[hjkl]")'   ,
-\         '<M-C-[jkl;]>' :    'ResizeWindow("[hjkl]")'   ,
-\           '<M-[oO]>'   :    'CreateWindow("[sv]")'     ,
-\           '<M-c>'      :  'CollapseWindow()'           ,
-\           '<M-w>'      :     'CloseWindow()'           ,
+let g:suckless_mappings = {
+\        '<M-[sdf]>'      :   'SetTilingMode("[sdf]")'    ,
+\        '<M-[jkl;]>'     :    'SelectWindow("[hjkl]")'   ,
+\        '<M-[JKL:]>'     :      'MoveWindow("[hjkl]")'   ,
+\      '<C-M-[jkl;]>'     :    'ResizeWindow("[hjkl]")'   ,
+\        '<M-[oO]>'       :    'CreateWindow("[sv]")'     ,
+\        '<M-w>'          :     'CloseWindow()'           ,
+\        '<M-[123456789]>':       'SelectTab([123456789])',
+\        '<M-[!@#$%^&*(]>': 'MoveWindowToTab([123456789])',
+\      '<C-M-[123456789]>': 'CopyWindowToTab([123456789])',
 \}
 ```
 
 If  the <kbd>Alt</kbd> key is not a good option for you, you can do the following to use the `<Leader>` key instead:
 
 ```vim
-let g:suckless_map_windows = {
-\    '<Leader>[sdf]'     :   'SetTilingMode("[sdf]")'    ,
-\    '<Leader>[hjkl]'    :    'SelectWindow("[hjkl]")'   ,
-\    '<Leader>[HJKL]'    :      'MoveWindow("[hjkl]")'   ,
-\ '<Leader><C-[hjkl]>'   :    'ResizeWindow("[hjkl]")'   ,
-\    '<Leader>[oO]'      :    'CreateWindow("[sv]")'     ,
-\    '<Leader>c'         :  'CollapseWindow()'           ,
-\    '<Leader>w'         :     'CloseWindow()'           ,
+let g:suckless_mappings = {
+\   '<Leader>[sdf]'       :   'SetTilingMode("[sdf]")'    ,
+\   '<Leader>[hjkl]'      :    'SelectWindow("[hjkl]")'   ,
+\   '<Leader>[HJKL]'      :      'MoveWindow("[hjkl]")'   ,
+\'<Leader><C-[hjkl]>'     :    'ResizeWindow("[hjkl]")'   ,
+\   '<Leader>[oO]'        :    'CreateWindow("[sv]")'     ,
+\   '<Leader>w'           :     'CloseWindow()'           ,
+\   '<Leader>[123456789]' :       'SelectTab([123456789])',
+\  '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+\  '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
 \}
-let g:suckless_map_tabs = {
-\  '<Leader>[123456789]' :       'SelectTab([123456789])',
-\ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
-\ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
-\}
+let mapleader = "\<Space>"  " best Leader key ever </my2¢>
 ```
 
 ### Tab Line & Label
