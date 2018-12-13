@@ -347,6 +347,7 @@ function! MoveWindow(direction, ...) "{{{
 endfunction "}}}
 
 function! ResizeWindow(direction, ...) "{{{
+
   function! HasAdjacentWindow(direction) "{{{
     " test if there's another window in the given direction
     let winnr = winnr()
@@ -438,7 +439,7 @@ endfunction "}}}
 "|    Keyboard Mappings                                                     {{{
 "|-----------------------------------------------------------------------------
 
-" MetaSendsEscape:
+" Preferences: g:MetaSendsEscape
 " Notes about the Alt key... {{{
 " Neovim users, you can ignore this paragraph. Enjoy!
 " Vim users, I'm afraid that <Alt>-shortcuts are tricky with Vim:
@@ -464,43 +465,66 @@ elseif !exists('g:MetaSendsEscape')
 endif
 " }}}
 
-" mapping helpers {{{
-function! s:escape_meta(shortcut)
-  let l:shortcut = a:shortcut
-  if g:MetaSendsEscape && a:shortcut =~ 'M-'
-    let l:shortcut = '<Esc>' . substitute(l:shortcut, 'M-', '><', '')
-    let l:shortcut = substitute(l:shortcut, '<>', '', '')
-    if l:shortcut =~ '<.>$'
-      let l = len(l:shortcut)
-      let l:shortcut = l:shortcut[0:l-4] . l:shortcut[l-2]
-    endif
-  endif
-  return l:shortcut
-endfunction
+" Preferences: g:suckless_mappgins
+if !exists('g:suckless_mappings') || type(g:suckless_mappings) != 4 "{{{
+  let g:suckless_mappings = {
+    \       '<M-[sdf]>'      :   'SetTilingMode("[sdf]")'    ,
+    \       '<M-[hjkl]>'     :    'SelectWindow("[hjkl]")'   ,
+    \       '<M-[HJKL]>'     :      'MoveWindow("[hjkl]")'   ,
+    \     '<M-C-[hjkl]>'     :    'ResizeWindow("[hjkl]")'   ,
+    \       '<M-[oO]>'       :    'CreateWindow("[sv]")'     ,
+    \       '<M-w>'          :     'CloseWindow()'           ,
+    \  '<Leader>[123456789]' :       'SelectTab([123456789])',
+    \ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
+    \ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
+    \}
+endif
+" Warning, using <Alt-key> shortcuts is very handy but it can be tricky:
+"  * may conflict with dwm/wmii - set the <Mod> key to <win> for your wm
+"  * may conflict with gVim     - disable the menu to avoid this (:set go-=m)
+"  * may raise problems in your terminal emulator (e.g. <M-s> on rxvt)
+"  * Shift+Alt+number would be neat but depends on the keyboard layout
+"}}}
 
-function! s:expand_mappings(shortcut, action)
-  let mappings = []
-  let regex = '\[.*\]'
-  if a:shortcut =~ regex
-    let r_shortcut = matchstr(a:shortcut, regex)[1:-2]
-    let r_action   = matchstr(a:action,   regex)[1:-2]
-    if len(r_shortcut) == len(r_action)
-      for i in range(len(r_shortcut))
-        let shortcut = substitute(a:shortcut, regex, r_shortcut[i], '')
-        let action   = substitute(a:action,   regex, r_action[i],   '')
-        call add(mappings, [ shortcut, action ])
-      endfor
-    endif
-  else
-    call add(mappings, [ a:shortcut, a:action ])
-  endif
-  return mappings
-endfunction
-
+" mapping helper {{{
 function! s:map(shortcut, action)
+
+  function! EscapeMeta(shortcut) "{{{
+    let l:shortcut = a:shortcut
+    if g:MetaSendsEscape && a:shortcut =~ 'M-'
+      let l:shortcut = '<Esc>' . substitute(l:shortcut, 'M-', '><', '')
+      let l:shortcut = substitute(l:shortcut, '<>', '', '')
+      if l:shortcut =~ '<.>$'
+        let l = len(l:shortcut)
+        let l:shortcut = l:shortcut[0:l-4] . l:shortcut[l-2]
+      endif
+    endif
+    return l:shortcut
+  endfunction "}}}
+
+  function! ExpandMappings(shortcut, action) "{{{
+    let mappings = []
+    let regex = '\[.*\]'
+    if a:shortcut =~ regex
+      let r_shortcut = matchstr(a:shortcut, regex)[1:-2]
+      let r_action   = matchstr(a:action,   regex)[1:-2]
+      if len(r_shortcut) == len(r_action)
+        for i in range(len(r_shortcut))
+          let action   = substitute(a:action,   regex, r_action[i],   '')
+          let shortcut = substitute(a:shortcut, regex, 
+                \ escape(r_shortcut[i], '~&*'), '')
+          call add(mappings, [ shortcut, action ])
+        endfor
+      endif
+    else
+      call add(mappings, [ a:shortcut, a:action ])
+    endif
+    return mappings
+  endfunction "}}}
+
   let mapterm = has('nvim') && a:shortcut =~ 'M-'
-  for [shortcut, action] in s:expand_mappings(a:shortcut, a:action)
-    let map = 'map <silent> ' . s:escape_meta(shortcut)
+  for [shortcut, action] in ExpandMappings(a:shortcut, a:action)
+    let map = 'map <silent> ' . EscapeMeta(shortcut)
     exe 'n' . map . ' :call ' . action . '<CR>'
     if mapterm " stay in insert mode when moving / resizing windows
       " pass a boolean '1' argument to mean we were in insert mode
@@ -509,50 +533,10 @@ function! s:map(shortcut, action)
     endif
   endfor
 endfunction
-"}}}
 
-" Tab Management {{{
-if !exists('g:suckless_map_tabs') || type(g:suckless_map_tabs) != 4
-  let g:suckless_map_tabs = {
-    \       '<M-[123456789]>':       'SelectTab([123456789])',
-    \  '<Leader>[123456789]' :       'SelectTab([123456789])',
-    \ '<Leader>t[123456789]' : 'MoveWindowToTab([123456789])',
-    \ '<Leader>T[123456789]' : 'CopyWindowToTab([123456789])',
-    \}
-endif
-for [ shortcut, action ] in items(g:suckless_map_tabs)
+for [ shortcut, action ] in items(g:suckless_mappings)
   call s:map(shortcut, action)
 endfor
-"}}}
-
-" Window Management {{{
-if !exists('g:suckless_map_windows') || type(g:suckless_map_windows) != 4
-  let g:suckless_map_windows = {
-    \           '<M-[sdf]>'  :   'SetTilingMode("[sdf]")'    ,
-    \           '<M-[hjkl]>' :    'SelectWindow("[hjkl]")'   ,
-    \           '<M-[HJKL]>' :      'MoveWindow("[hjkl]")'   ,
-    \         '<M-C-[hjkl]>' :    'ResizeWindow("[hjkl]")'   ,
-    \           '<M-[oO]>'   :    'CreateWindow("[sv]")'     ,
-    \           '<M-c>'      :  'CollapseWindow()'           ,
-    \           '<M-w>'      :     'CloseWindow()'           ,
-    \}
-endif
-for [ shortcut, action ] in items(g:suckless_map_windows)
-  call s:map(shortcut, action)
-endfor
-"}}}
-
-" Public API for user-defined mappings {{{
-function! suckless#nmap(shortcut, action)
-  for [shortcut, action] in s:expand_mappings(a:shortcut, a:action)
-    exe 'nmap <silent> ' . s:escape_meta(shortcut) . ' ' . action
-  endfor
-endfunction
-function! suckless#tmap(shortcut, action)
-  for [shortcut, action] in s:expand_mappings(a:shortcut, a:action)
-    exe 'tmap <silent> ' . s:escape_meta(shortcut) . ' ' . action
-  endfor
-endfunction
 "}}}
 
 "}}}
@@ -576,23 +560,6 @@ endfunction
 "    for other plugins such as project.tar.gz, ctags, etc.
 "
 " I think the wmii-mode makes much more sense for Vim anyway. ;-)
-" }}}
-
-" preferences {{{
-" Preferences: key mappings to handle windows and tabs
-" Warning, using <Alt-key> shortcuts is very handy but it can be tricky:
-"  * may conflict with dwm/wmii - set the <Mod> key to <win> for your wm
-"  * may conflict with gVim     - disable the menu to avoid this
-"  * may raise problems in your terminal emulator (e.g. <M-s> on rxvt)
-"  * Shift+Alt+number only works on the US-Qwerty keyboard layout
-let g:SucklessWinKeyMappings = 3  " 0 = none - define your own!
-                                  " 1 = <Leader> + key(s)
-                                  " 2 = <Alt-key>
-                                  " 3 = both
-let g:SucklessTabKeyMappings = 3  " 0 = none - define your own!
-                                  " 1 = <Leader> + key(s)
-                                  " 2 = <Alt-key>
-                                  " 3 = both
 let g:SucklessTilingEmulation = 1 " 0 = none - define your own!
                                   " 1 = wmii-style (preferred)
                                   " 2 = dwm-style (not working yet)
