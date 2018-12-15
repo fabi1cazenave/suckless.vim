@@ -488,6 +488,8 @@ endif
 
 " mapping helper {{{
 function! s:map(shortcut, action)
+  let mapterm = exists('g:suckless_tmap') && g:suckless_tmap
+        \ && a:shortcut =~ 'M-'
 
   function! EscapeMeta(shortcut) "{{{
     let l:shortcut = a:shortcut
@@ -522,7 +524,6 @@ function! s:map(shortcut, action)
     return mappings
   endfunction "}}}
 
-  let mapterm = has('nvim') && a:shortcut =~ 'M-'
   for [shortcut, action] in ExpandMappings(a:shortcut, a:action)
     let map = 'map <silent> ' . EscapeMeta(shortcut)
     exe 'n' . map . ' :call ' . action . '<CR>'

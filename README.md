@@ -103,6 +103,14 @@ On MacOSX, the <kbd>Alt</kbd> key might not be enabled in your terminal by defau
 Settings
 --------------------------------------------------------------------------------
 
+### Terminal Windows
+
+All <kbd>Alt</kbd>-* shortcuts can be used on terminal windows in insert mode if the following is set:
+
+```vim
+let g:suckless_tmap = 1
+```
+
 ### New Splits
 
 To be more consistent with most tiling window managers (wmii, i3, awesome…) these settings are recommended:
