@@ -487,9 +487,11 @@ endif
 "}}}
 
 " mapping helper {{{
+let s:map_term = exists('g:suckless_tmap') && g:suckless_tmap
+      \ && (has('nvim') || has('terminal'))
+
 function! s:map(shortcut, action)
-  let mapterm = exists('g:suckless_tmap') && g:suckless_tmap
-        \ && a:shortcut =~ 'M-'
+  let mapterm = s:map_term && a:shortcut =~ 'M-'
 
   function! EscapeMeta(shortcut) "{{{
     let l:shortcut = a:shortcut

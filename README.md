@@ -111,6 +111,8 @@ All <kbd>Alt</kbd>-* shortcuts can be used on terminal windows in insert mode if
 let g:suckless_tmap = 1
 ```
 
+Requires Neovim or Vim 8 with `:terminal` support.
+
 ### New Splits
 
 To be more consistent with most tiling window managers (wmii, i3, awesome…) these settings are recommended:
