@@ -172,7 +172,17 @@ function! GetTilingMode(mode) "{{{
 endfunction "}}}
 
 function! SetTilingMode(mode, ...) "{{{
-  " apply new window mode
+  " when getting back from fullscreen mode, restore all windows
+  if t:windowMode == 'f' && exists('t:windowSizes')
+    exe t:windowSizes
+    unlet t:windowSizes
+    if a:mode == 'f' " assume [d]ivided mode by default and return
+      let t:windowMode = 'd'
+      return
+    endif
+  endif
+
+  " apply the new window mode
   if a:mode == 'f'        " [f]ullscreen mode
     let t:windowSizes = winrestcmd()
     wincmd |              "   maximize current window vertically and horizontally
@@ -187,35 +197,6 @@ function! SetTilingMode(mode, ...) "{{{
     let w:maximized = 1
     wincmd _              "   maximize current window vertically
     set eadirection=hor
-  endif
-
-  " when getting back from fullscreen mode, restore all minimum widths
-  if t:windowMode == 'f' && a:mode != 'f'
-    if exists('t:windowSizes')
-      exe t:windowSizes
-    else
-      " store current window number
-      let winnr = winnr()
-      " check all columns
-      wincmd t
-      let tmpnr = 0
-      while tmpnr != winnr()
-        " restore min width if this column is collapsed
-        if winwidth(0) < g:suckless_min_width
-          exe 'set winwidth=' . g:suckless_min_width
-        endif
-        " balance window heights in this column if switching to 'Divided' mode
-        if a:mode == 'd'
-          wincmd n
-          wincmd c
-        endif
-        " next column
-        let tmpnr = winnr()
-        wincmd l
-      endwhile
-      " select window #winnr
-      exe winnr . 'wincmd w'
-    endif
   endif
 
   " store the new window mode in the current tab's global variables
