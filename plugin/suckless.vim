@@ -97,7 +97,7 @@ function! SelectTab(dir_or_viewnr, ...) "{{{
     if a:dir_or_viewnr >= 9 || a:dir_or_viewnr > tabpagenr('$')
       tablast
     else
-      exe "tabnext " . a:dir_or_viewnr
+      exe 'tabnext ' . a:dir_or_viewnr
     endif
   elseif a:dir_or_viewnr == 'h'
     tabprev
@@ -110,9 +110,9 @@ endfunction "}}}
 function! MoveTab(direction, ...) "{{{
   let tabnr = tabpagenr()
   if a:direction == 'h' && tabnr > 1
-    exe "tabmove " . (tabnr - 2)
+    exe 'tabmove ' . (tabnr - 2)
   elseif a:direction == 'l' && tabnr < tabpagenr('$')
-    exe "tabmove " . (tabnr + 1)
+    exe 'tabmove ' . (tabnr + 1)
   endif
   if a:0 | startinsert | endif
 endfunction "}}}
@@ -120,7 +120,7 @@ endfunction "}}}
 " MoveToTab: move/copy current window to another tab
 function! s:MoveToTab(viewnr, copy) "{{{
   " get the current buffer ref
-  let bufnr = bufnr("%")
+  let bufnr = bufnr('%')
 
   " remove current window if 'copy' isn't set
   if a:copy == 0
@@ -135,7 +135,7 @@ function! s:MoveToTab(viewnr, copy) "{{{
     tabnew
   else
     " select the requested Tab an add a window with the current buffer
-    exe "tabnext " . viewnr
+    exe 'tabnext ' . viewnr
     wincmd l
     " TODO: if the buffer is already displayed in this Tab, select its window
     " TODO: if this tab is in 'stacked' or 'fullscreen' mode, expand window
@@ -144,7 +144,7 @@ function! s:MoveToTab(viewnr, copy) "{{{
   endif
 
   " display the current buffer
-  exe "b" . bufnr
+  exe 'b' . bufnr
 endfunction "}}}
 
 function! MoveWindowToTab(viewnr, ...)
@@ -166,7 +166,7 @@ endfunction
 "|-----------------------------------------------------------------------------
 
 function! GetTilingMode(mode) "{{{
-  if !exists("t:windowMode")
+  if !exists('t:windowMode')
     let t:windowMode = a:mode
   endif
 endfunction "}}}
@@ -191,7 +191,7 @@ function! SetTilingMode(mode, ...) "{{{
 
   " when getting back from fullscreen mode, restore all minimum widths
   if t:windowMode == 'f' && a:mode != 'f'
-    if exists("t:windowSizes")
+    if exists('t:windowSizes')
       exe t:windowSizes
     else
       " store current window number
@@ -202,7 +202,7 @@ function! SetTilingMode(mode, ...) "{{{
       while tmpnr != winnr()
         " restore min width if this column is collapsed
         if winwidth(0) < g:suckless_min_width
-          exe "set winwidth=" . g:suckless_min_width
+          exe 'set winwidth=' . g:suckless_min_width
         endif
         " balance window heights in this column if switching to 'Divided' mode
         if a:mode == 'd'
@@ -214,7 +214,7 @@ function! SetTilingMode(mode, ...) "{{{
         wincmd l
       endwhile
       " select window #winnr
-      exe winnr . "wincmd w"
+      exe winnr . 'wincmd w'
     endif
   endif
 
@@ -228,53 +228,53 @@ function! SelectWindow(direction, ...) "{{{
 
   " issue the corresponding 'wincmd'
   let winnr = winnr()
-  exe "wincmd " . a:direction
+  exe 'wincmd ' . a:direction
 
   " wrap around if needed
   if winnr() == winnr
     " vertical wrapping {{{
-    if "jk" =~ a:direction
+    if 'jk' =~ a:direction
       " wrap around in current column
       if g:suckless_wrap_around_jk == 1
         let tmpnr = -1
         while tmpnr != winnr()
           let tmpnr = winnr()
-          if a:direction == "j"
+          if a:direction == 'j'
             wincmd k
-          elseif a:direction == "k"
+          elseif a:direction == 'k'
             wincmd j
           endif
         endwhile
       " select next/previous window
       elseif g:suckless_wrap_around_jk == 2
-        if a:direction == "j"
+        if a:direction == 'j'
           wincmd w
-        elseif a:direction == "k"
+        elseif a:direction == 'k'
           wincmd W
         endif
       endif
     endif "}}}
     " horizontal wrapping {{{
-    if "hl" =~ a:direction
+    if 'hl' =~ a:direction
       " wrap around in current window
       if g:suckless_wrap_around_hl == 1
         let tmpnr = -1
         while tmpnr != winnr()
           let tmpnr = winnr()
-          if a:direction == "h"
+          if a:direction == 'h'
             wincmd l
-          elseif a:direction == "l"
+          elseif a:direction == 'l'
             wincmd h
           endif
         endwhile
       " select next/previous tab
       elseif g:suckless_wrap_around_hl == 2
-        if a:direction == "h"
+        if a:direction == 'h'
           if tabpagenr() > 1
             tabprev
             wincmd b
           endif
-        elseif a:direction == "l"
+        elseif a:direction == 'l'
           if tabpagenr() < tabpagenr('$')
             tabnext
             wincmd t
@@ -285,7 +285,7 @@ function! SelectWindow(direction, ...) "{{{
   endif
 
   " resize window according to the current window mode
-  if t:windowMode == "F"
+  if t:windowMode == 'f'
     " 'Fullscreen' mode
     wincmd _   " maximize window height
     wincmd |   " maximize window width
@@ -296,16 +296,16 @@ function! SelectWindow(direction, ...) "{{{
   endif
 
   " ensure the window width is greater or equal to the minimum
-  if "hl" =~ a:direction && winwidth(0) < g:suckless_min_width
-    exe "set winwidth=" . g:suckless_min_width
+  if 'hl' =~ a:direction && winwidth(0) < g:suckless_min_width
+    exe 'set winwidth=' . g:suckless_min_width
   endif
 endfunction "}}}
 
 function! MoveWindow(direction, ...) "{{{
   let winnr = winnr()
-  let bufnr = bufnr("%")
+  let bufnr = bufnr('%')
 
-  if a:direction == "j"        " move window to the previous row
+  if a:direction == 'j'        " move window to the previous row
     wincmd j
     if winnr() != winnr
       wincmd k
@@ -314,20 +314,20 @@ function! MoveWindow(direction, ...) "{{{
       wincmd j
     endif
 
-  elseif a:direction == "k"    " move window to the next row
+  elseif a:direction == 'k'    " move window to the next row
     wincmd k
     stopinsert
     if winnr() != winnr
       wincmd x
     endif
 
-  elseif "hl" =~ a:direction   " move window to the previous/next column
-    exe "wincmd " . a:direction
+  elseif 'hl' =~ a:direction   " move window to the previous/next column
+    exe 'wincmd ' . a:direction
     let newwinnr = winnr()
     if newwinnr == winnr
       " move window to a new column
-      exe "wincmd " . toupper(a:direction)
-      if t:windowMode == "S"
+      exe 'wincmd ' . toupper(a:direction)
+      if t:windowMode == 's'
         wincmd p
         wincmd _
         wincmd p
@@ -337,15 +337,15 @@ function! MoveWindow(direction, ...) "{{{
       wincmd p
       stopinsert
       wincmd c
-      if t:windowMode == "S"
+      if t:windowMode == 's'
         wincmd _
       endif
-      exe (newwinnr - (a:direction == "l")) . "wincmd w"
+      exe (newwinnr - (a:direction == 'l')) . 'wincmd w'
       wincmd n
-      if t:windowMode == "S"
+      if t:windowMode == 's'
         wincmd _
       endif
-      exe "b" . bufnr
+      exe 'b' . bufnr
     endif
 
   endif
@@ -367,7 +367,7 @@ function! ResizeWindow(direction, ...) "{{{
   endfunction "}}}
 
   if 'jk' =~ a:direction
-    let t:windowMode = 'D'
+    let t:windowMode = 'd'
     let cmd = xor(HasAdjacentWindow('j'), 'j' == a:direction) ? '-' : '+'
     exe g:suckless_inc_height . ' wincmd ' . cmd
   elseif 'hl' =~ a:direction
@@ -380,24 +380,24 @@ endfunction "}}}
 
 function! CreateWindow(direction, ...) "{{{
   wincmd n
-  if t:windowMode == "S"
+  if t:windowMode == 's'
     wincmd _
   endif
-  if (a:direction == "v")
-    call MoveWindow("l")
+  if (a:direction == 'v')
+    call MoveWindow('l')
     stopinsert
   endif
 endfunction "}}}
 
 function! CollapseWindow(...) "{{{
-  if t:windowMode == "D"
+  if t:windowMode == 'd'
     resize 0
   endif
 endfunction "}}}
 
 function! CloseWindow(...) "{{{
   wincmd c
-  if t:windowMode == "S"
+  if t:windowMode == 's'
     wincmd _
   endif
 endfunction "}}}
@@ -415,7 +415,7 @@ endfunction "}}}
 
 " Cannot use this because `set eadirection=hor` does not work as expected
 " function! AutoResizeAllWindows() "{{{
-"   if t:windowMode == "S"
+"   if t:windowMode == 's'
 "     set eadirection=hor " XXX not working
 "   else
 "     set eadirection=both
@@ -426,7 +426,7 @@ endfunction "}}}
 function! AutoResizeAllWindows() "{{{
   let winnr = winnr()
   wincmd =
-  if t:windowMode == "S"
+  if t:windowMode == 's'
     windo call AutoResizeWindow()
   endif
   while winnr != winnr()
@@ -437,7 +437,7 @@ endfunction "}}}
 function! AutoResizeAllTabs() "{{{
   let tabnr = tabpagenr()
   tabdo call AutoResizeAllWindows()
-  exe "tabnext " . tabnr
+  exe 'tabnext ' . tabnr
 endfunction "}}}
 
 "}}}
@@ -549,73 +549,6 @@ endfor
 "}}}
 
 "}}}
-
-"|    TODO (not working yet)                                                {{{
-"|-----------------------------------------------------------------------------
-
-" tiling modes {{{
-" Two modes should be possible:
-"  * wmii: use as many columns as you want
-"  *  dwm: one master window + one column for all other windows
-"
-" The wmii-mode is working properly, though there are a few difference with wmii:
-"  * no 'maximized' mode (*sigh*)
-"  * there's one stacking mode per tab, whereas wmii has one stacking mode per column.
-"
-" The dwm-mode would need some work to become usable:
-"  * the master area should be able to have more than one window (ex: help)
-"  * a specific event handler should prevent to create another column
-"  * a specific column next to the master area (on the left) would be required
-"    for other plugins such as project.tar.gz, ctags, etc.
-"
-" I think the wmii-mode makes much more sense for Vim anyway. ;-)
-let g:SucklessTilingEmulation = 1 " 0 = none - define your own!
-                                  " 1 = wmii-style (preferred)
-                                  " 2 = dwm-style (not working yet)
-" }}}
-
-" Master window (dwm mode) {{{
-function! WindowMaster()
-  " swap from/to master area
-  " get the current buffer ref
-  let bufnr1 = bufnr("%")
-  let winnr1 = winnr()
-
-  wincmd l
-  let bufnr2 = bufnr("%")
-  let winnr2 = winnr()
-
-  "if bufnr("%") != bufnr1
-  if winnr1 != winnr2
-    " we were in the master area
-    exe "b" . bufnr1
-    wincmd h
-    exe "b" . bufnr2
-    "" get back (cancel action)
-    "wincmd p
-  else
-    " we were in the secondary area
-    wincmd h
-    let bufnr2 = bufnr("%")
-    exe "b" . bufnr1
-    wincmd p
-    exe "b" . bufnr2
-    wincmd h
-  endif
-endfunction "}}}
-
-" 'Project' sidebar {{{
-function! Sidebar()
-  if g:loaded_project == 1 && (!exists('g:proj_running') || bufwinnr(g:proj_running) == -1)
-    Project   " call Project if hidden
-  elseif bufwinnr(winnr()) < 0
-    wincmd p  " we're in the Sidebar, get back to the buffer window
-  else
-    wincmd t  " we're in a buffer window, go to the Project Sidebar
-  endif
-endfunction "}}}
-
-" }}}
 
 if has('autocmd')
   " 'Divided' mode by default - each tab has its own window mode
