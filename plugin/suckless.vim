@@ -74,12 +74,18 @@ function! SucklessTabLabel(...) "{{{
   endfor
   let label .= ']' . space
 
-  " file name
+  " buffer name
   let buf = buflist[tabpagewinnr(tabnr) - 1]
-  let label .= fnamemodify(bufname(buf), ':t')
-  let label .= getbufvar(buf, '&modified') ? ' + ' : ' '
+  let name = bufname(buf)
+  if name =~ '^term://.*:'
+    " display the process name (XXX fails if there's a space in the path)
+    let label .= fnamemodify(name, ':s/^term:.*://:s/\s.*//:t:r')
+  else
+    " display the file name
+    let label .= fnamemodify(name, ':t')
+  endif
 
-  return label
+  return label . (getbufvar(buf, '&modified') ? ' + ' : ' ')
 endfunction "}}}
 if (!exists('g:suckless_guitablabel') || g:suckless_guitablabel)
   set guitablabel=%!SucklessTabLabel()
