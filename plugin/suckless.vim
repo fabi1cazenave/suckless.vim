@@ -3,7 +3,7 @@
 "| File    : ~/.config/nvim/plugin/suckless.vim
 "| Source  : https://github.com/fabi1cazenave/suckless.vim
 "| Author  : Fabien Cazenave
-"| Licence : WTFPL
+"| Licence : MIT
 "|
 "| Tiling window management that sucks less - see http://suckless.org/
 "| This emulates wmii/i3 in Vim & Neovim as much as possible.
