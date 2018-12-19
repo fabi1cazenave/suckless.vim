@@ -14,10 +14,10 @@ if !exists('g:suckless_min_width')
   let g:suckless_min_width = 24         " minimum window width
 endif
 if !exists('g:suckless_inc_width')
-  let g:suckless_inc_width = 12         " width increment
+  let g:suckless_inc_width = 4          " width increment
 endif
 if !exists('g:suckless_inc_height')
-  let g:suckless_inc_height = 6         " height increment
+  let g:suckless_inc_height = 2         " height increment
 endif
 
 " Preferences: wrap-around modes for window selection

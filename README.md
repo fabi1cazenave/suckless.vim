@@ -146,8 +146,8 @@ let g:suckless_guitablabel = 0
 
 ```vim
 let g:suckless_min_width = 24      " minimum window width
-let g:suckless_inc_width = 12      " width increment
-let g:suckless_inc_height = 6      " height increment
+let g:suckless_inc_width = 4       " width increment
+let g:suckless_inc_height = 2      " height increment
 ```
 
 ### Wrap-Around Modes
