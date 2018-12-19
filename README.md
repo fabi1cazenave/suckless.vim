@@ -1,8 +1,8 @@
-suckless
+suckless.vim
 ================================================================================
 
-Tiling window management that sucks less - see <https://dwm.suckless.org/>. <br>
-This plugin emulates [wmii†][1] / [dwm][2] / [i3][3] / [awesome][4] in Vim and Neovim.
+Tiling window management that sucks less — see <https://dwm.suckless.org/>. <br>
+Inspired by [wmii†][1] / [dwm][2] / [i3][3] / [awesome][4].
 
   [1]: https://code.google.com/archive/p/wmii/
   [2]: https://dwm.suckless.org/
@@ -11,6 +11,12 @@ This plugin emulates [wmii†][1] / [dwm][2] / [i3][3] / [awesome][4] in Vim and
 
 Instructions
 --------------------------------------------------------------------------------
+
+The idea behind this plugin is to make it easy to organize Vim windows in columns, like a tiling window manager would do. Three tiling modes are supported:
+
+* **divided** (default): in each column, all windows share the available vertical space;
+* **stacked**: in each column, the active window is maximized vertically and all other windows are collapsed (height = one row);
+* **fullscreen**: the active window is maximized (max height & width), all other windows are collapsed horizontally and vertically.
 
 For the window management, all shortcuts use the <kbd>Alt</kbd> (Meta) key by default:
 
@@ -91,7 +97,7 @@ By default, this plugin relies on the <kbd>Alt</kbd> key. This works fine with N
 * or an <kbd>Esc</kbd> is sent along with the key, i.e. <kbd>Alt</kbd><kbd>j</kbd> becomes <kbd>Esc</kbd><kbd>j</kbd> — that’s what happens with most terminal emulators.
 
 
-*suckless* should handle this properly, but in case your <kbd>Alt</kbd> shortcuts are not detected you can define the `g:MetaSendsEscape` variable explicitly:
+*suckless.vim* should handle this properly, but in case your <kbd>Alt</kbd> shortcuts are not detected you can define the `g:MetaSendsEscape` variable explicitly:
 
 ```vim
 let g:MetaSendsEscape = 0  " use this if Alt-j outputs an 'ê' on your terminal Vim
@@ -152,8 +158,24 @@ let g:suckless_wrap_around_hl = 1  " wrap in current tab    (wmii-like)
 ```
 
 
-Feedback
+Related Plugin
 --------------------------------------------------------------------------------
 
-Bug reports, suggestions and pull requests are welcome.
+[TermOpen][6] can be used to spawn terminals and TUI apps within Vim / Neovim like you would do in a tiling WM desktop. This can turn [Neovim-Qt][7] into a good substitute for [i3][3] / [awesome][4] users when working on non-Linux systems.
 
+FWIW, this is how I emulate [my i3 configuration][5] in Neovim:
+
+```vim
+Plug 'fabi1cazenave/suckless.vim'  " vim-plug FTW
+Plug 'fabi1cazenave/termopen.vim'
+set splitbelow
+set splitright
+let g:suckless_tmap = 1
+nmap <silent> <M-Return>    :call TermOpen()<CR>
+nmap <silent> <M-Backspace> :call TermOpenRanger()<CR>
+```
+
+Note that mapping <kbd>Alt</kbd><kbd>Return</kbd> and <kbd>Alt</kbd><kbd>Backspace</kbd> can be tricky with Vim, and even trickier with gVim. No problem with Neovim though.
+
+  [6]: https://github.com/fabi1cazenave/termopen.vim
+  [7]: https://github.com/equalsraf/neovim-qt
