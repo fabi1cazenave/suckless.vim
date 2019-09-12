@@ -360,14 +360,11 @@ function! ResizeWindow(direction, ...) "{{{
 endfunction "}}}
 
 function! CreateWindow(direction, ...) "{{{
-  wincmd n
+  execute 'wincmd '.a:direction
   if t:windowMode == 's'
     wincmd _
   endif
-  if (a:direction == 'v')
-    call MoveWindow('l')
-    stopinsert
-  endif
+  stopinsert
 endfunction "}}}
 
 function! CollapseWindow(...) "{{{
@@ -502,7 +499,7 @@ function! s:map(shortcut, action)
       if len(r_shortcut) == len(r_action)
         for i in range(len(r_shortcut))
           let action   = substitute(a:action,   regex, r_action[i],   '')
-          let shortcut = substitute(a:shortcut, regex, 
+          let shortcut = substitute(a:shortcut, regex,
                 \ escape(r_shortcut[i], '~&*'), '')
           call add(mappings, [ shortcut, action ])
         endfor
