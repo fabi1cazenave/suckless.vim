@@ -361,6 +361,7 @@ endfunction "}}}
 
 function! CreateWindow(direction, ...) "{{{
   execute 'wincmd '.a:direction
+  enew
   if t:windowMode == 's'
     wincmd _
   endif
