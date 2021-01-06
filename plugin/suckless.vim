@@ -124,7 +124,7 @@ function! s:MoveToTab(viewnr, copy) "{{{
 
   " remove current window if 'copy' isn't set
   if a:copy == 0
-    wincmd c
+    close!
   endif
 
   " get a window in the requested Tab
