@@ -532,12 +532,14 @@ endfor
 "}}}
 
 if has('autocmd')
-  " 'Divided' mode by default - each tab has its own window mode
-  autocmd! TabEnter * call GetTilingMode('d')
-  " Resize all windows when Vim is resized.
-  autocmd! VimResized * call AutoResizeAllTabs()
-  " developer candy: apply all changes immediately
-  autocmd! BufWritePost suckless.vim source %
+  augroup suckless
+    " 'Divided' mode by default - each tab has its own window mode
+    autocmd! TabEnter * call GetTilingMode('d')
+    " Resize all windows when Vim is resized.
+    autocmd! VimResized * call AutoResizeAllTabs()
+    " developer candy: apply all changes immediately
+    autocmd! BufWritePost suckless.vim source %
+  augroup END
 endif
 call GetTilingMode('d')
 
